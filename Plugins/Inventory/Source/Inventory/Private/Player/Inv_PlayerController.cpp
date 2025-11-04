@@ -30,6 +30,7 @@ void AInv_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//Setup mapping context. Loop through array of contexts
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 	if (IsValid(Subsystem))
 	{
@@ -39,6 +40,7 @@ void AInv_PlayerController::BeginPlay()
 		}
 	}
 
+	//Create HUD
 	CreateHUDWidget();
 }
 
@@ -46,8 +48,10 @@ void AInv_PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
+	//Cast input component from Actor to Enhanced Input
 	UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(InputComponent);
 
+	//Bind input action
 	EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &AInv_PlayerController::PrimaryInteract);
 }
 
@@ -59,8 +63,10 @@ void AInv_PlayerController::PrimaryInteract()
 
 void AInv_PlayerController::CreateHUDWidget()
 {
+	// Prevents server from creating widget 
 	if (!IsLocalController()) return;
 
+	// Create HUD and add to viewport 
 	HUDWidget = CreateWidget<UInv_HUDWidget>(this, HUDWidgetClass);
 	if (IsValid(HUDWidget))
 	{
@@ -71,8 +77,11 @@ void AInv_PlayerController::CreateHUDWidget()
 
 void AInv_PlayerController::TraceForItem()
 {
+	// Early return if GEngine isn't valid 
 	if (!IsValid(GEngine) || !IsValid(GEngine->GameViewport)) return;
 
+	// Get viewport size and find middle. Create empty vectors to hold information from ProjectScreenToWorld
+	// Call ProjectScreenToWorld
 	FVector2D ViewportSize;
 	GEngine->GameViewport->GetViewportSize(ViewportSize);
 	const FVector2D ViewportCenter = ViewportSize / 2.f;
@@ -80,10 +89,12 @@ void AInv_PlayerController::TraceForItem()
 	FVector Forward;
 	if (!UGameplayStatics::DeprojectScreenToWorld(this, ViewportCenter, TraceStart, Forward)) return;
 
+	// Calculate Trace End from filled out Vectors. Create empty hitresult that is filled by linetrace 
 	const FVector TraceEnd = TraceStart + (Forward * TraceLength);
 	FHitResult HitResult;
 	GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ItemTraceChannel);
 
+	// Rewatch section to understand again 
 	LastActor = ThisActor;
 	ThisActor = HitResult.GetActor();
 

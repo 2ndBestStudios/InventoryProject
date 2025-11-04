@@ -15,9 +15,11 @@ class INVENTORY_API UInv_ItemComponent : public UActorComponent
 public:
 	UInv_ItemComponent();
 
+	// Getter for pickup message 
 	FString GetPickupMessage() const {return PickupMessage;}
 private:
 
+	// Create pickup message 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	FString PickupMessage;
 };

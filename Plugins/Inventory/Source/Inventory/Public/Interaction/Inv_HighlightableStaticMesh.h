@@ -16,11 +16,13 @@ class INVENTORY_API UInv_HighlightableStaticMesh : public UStaticMeshComponent, 
 	GENERATED_BODY()
 
 public:
+	// Rewatch to understand implmentation 
 	virtual void Highlight_Implementation() override;
 	virtual void UnHighlight_Implementation() override;
 
 private:
 
+	// Create highlight material for static mesh
 	UPROPERTY(EditAnywhere, Category="Inventory")
 	TObjectPtr<UMaterialInterface> HighlightMaterial;
 };

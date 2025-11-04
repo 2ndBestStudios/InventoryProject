@@ -16,6 +16,7 @@ class INVENTORY_API UInv_HUDWidget : public UUserWidget
 
 public:
 
+	// Create implementable events to use in BP 
 	UFUNCTION(BlueprintImplementableEvent, Category="Inventory")
 	void ShowPickupMessage(const FString& Message);
 
