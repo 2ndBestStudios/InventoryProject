@@ -6,6 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "Inv_PlayerController.generated.h"
 
+class UInv_HUDWidget;
 class UInputMappingContext;
 class UInputAction;
 
@@ -20,11 +21,18 @@ protected:
 
 private:
 
-	void PrimaryInteract(); 
+	void PrimaryInteract();
+	void CreateHUDWidget();
 	
 	UPROPERTY(EditDefaultsOnly, Category= "Inventory")
 	TArray<TObjectPtr<UInputMappingContext>> DefaultInputMappingContexts;
 
 	UPROPERTY(editdefaultsOnly, Category= "Inventory")
-	TObjectPtr<UInputAction> PrimaryInteractAction; 
+	TObjectPtr<UInputAction> PrimaryInteractAction;
+
+	UPROPERTY(EditDefaultsOnly, Category= "Inventory")
+	TSubclassOf<UInv_HUDWidget> HUDWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UInv_HUDWidget> HUDWidget;
 };
