@@ -24,7 +24,7 @@ public:
 	virtual void Tick( float DeltaTime );
 
 	// Toggles inventory. Can be called from blueprint 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Category= "Inventory")
 	void ToggleInventory();
 	
 protected:
