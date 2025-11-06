@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputMappingContext.h"
 #include "Interaction/Inv_Highlightable.h"
+#include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Items/Components/Inv_ItemComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/HUD/Inv_HUDWidget.h"
@@ -14,6 +15,7 @@
 
 AInv_PlayerController::AInv_PlayerController()
 {
+	// Line trace parameters 
 	PrimaryActorTick.bCanEverTick = true;
 	TraceLength = 500.0;
 	ItemTraceChannel = ECC_GameTraceChannel1; 
@@ -23,7 +25,15 @@ void AInv_PlayerController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Continually traces for items 
 	TraceForItem();
+}
+
+void AInv_PlayerController::ToggleInventory()
+{
+	// Checks if inventory component is valid. Then calls toggle inventory function 
+	if (!InventoryComponent.IsValid()) return;
+	InventoryComponent->ToggleInventoryMenu(); 
 }
 
 void AInv_PlayerController::BeginPlay()
@@ -40,6 +50,9 @@ void AInv_PlayerController::BeginPlay()
 		}
 	}
 
+	// Sets inventory component that was set in blueprint 
+	InventoryComponent = FindComponentByClass<UInv_InventoryComponent>();
+
 	//Create HUD
 	CreateHUDWidget();
 }
@@ -53,6 +66,8 @@ void AInv_PlayerController::SetupInputComponent()
 
 	//Bind input action
 	EnhancedInputComponent->BindAction(PrimaryInteractAction, ETriggerEvent::Started, this, &AInv_PlayerController::PrimaryInteract);
+	EnhancedInputComponent->BindAction(ToggleInventoryAction, ETriggerEvent::Started, this, &AInv_PlayerController::ToggleInventory);
+
 }
 
 void AInv_PlayerController::PrimaryInteract()

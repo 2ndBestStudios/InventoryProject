@@ -4,14 +4,25 @@
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 
-// Component constructor 
 UInv_InventoryComponent::UInv_InventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
 
 }
 
-// Called in beginning of game 
+void UInv_InventoryComponent::ToggleInventoryMenu()
+{
+	// Toggles inventory menu 
+	if (bInventoryMenuOpen)
+	{
+		CloseInventoryMenu();
+	}
+	else
+	{
+		OpenInventoryMenu();
+	}
+}
+
 void UInv_InventoryComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -20,7 +31,6 @@ void UInv_InventoryComponent::BeginPlay()
 	ConstructInventory(); 
 }
 
-// Creates inventory 
 void UInv_InventoryComponent::ConstructInventory()
 {
 	// Get Player controller by casting the result of the actor function GetOwner
@@ -31,7 +41,43 @@ void UInv_InventoryComponent::ConstructInventory()
 
 	// Create widget based on InventoryBaseWidget. Since OwningController is weak get actual. Based on InventoryClass 
 	InventoryMenu = CreateWidget<UInv_InventoryBase>(OwningController.Get(), InventoryMenuClass);
-	InventoryMenu->AddToViewport(); 
+	InventoryMenu->AddToViewport();
+
+	// After creating set inventory to collapsed 
+	CloseInventoryMenu(); 
+}
+
+void UInv_InventoryComponent::OpenInventoryMenu()
+{
+	// Check if inventory menu is valid, then set visibility and toggle variable 
+	if (!IsValid(InventoryMenu)) return;
+
+	InventoryMenu->SetVisibility(ESlateVisibility::Visible);
+	bInventoryMenuOpen = true;
+
+	// Check if owning controller is valid, then set input mode to UI 
+	if (!OwningController.IsValid()) return;
+
+	FInputModeGameAndUI InputMode;
+	OwningController->SetInputMode(InputMode);
+	OwningController->SetShowMouseCursor(true);
+	
+}
+
+void UInv_InventoryComponent::CloseInventoryMenu()
+{
+	// Check if inventory menu is valid, then collapse and toggle variable 
+	if (!IsValid(InventoryMenu)) return;
+
+	InventoryMenu->SetVisibility(ESlateVisibility::Collapsed);
+	bInventoryMenuOpen = false;
+
+	// Check if owning controller is valid, then reenable input to game  
+	if (!OwningController.IsValid()) return;
+
+	FInputModeGameOnly InputMode;
+	OwningController->SetInputMode(InputMode);
+	OwningController->SetShowMouseCursor(false);
 }
 
 
