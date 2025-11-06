@@ -17,9 +17,11 @@ struct FInv_InventoryEntry : public FFastArraySerializerItem
 	FInv_InventoryEntry() {} 
 
 private:
+	// allows private access to these files 
 	friend struct FInv_InventoryFastArray; 
 	friend UInv_InventoryComponent;
-	
+
+	// pointer to actual object 
 	UPROPERTY()
 	TObjectPtr<UInv_InventoryItem> Item = nullptr;
 };
@@ -36,10 +38,13 @@ struct FInv_InventoryFastArray : public FFastArraySerializer
 	TArray<UInv_InventoryItem*> GetAllItems() const; 
 
 	// FFastArraySerializer contract
-	void PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize); 
+	// Called before items are removed from array. Good for cleaning up UI 
+	void PreReplicatedRemove(const TArrayView<int32> RemovedIndices, int32 FinalSize);
+	// Called after new items are added to the array. Good for creating UI 
 	void PostReplicatedAdd(const TArrayView<int32> AddedIndices, int32 FinalSize);
 	// End of FFastArraySerializer contract
 
+	// Required for serialization 
 	bool NetDeltaSerialize(FNetDeltaSerializeInfo& DeltaParams)
 	{
 		return FastArrayDeltaSerialize<FInv_InventoryEntry, FInv_InventoryFastArray>(Entries, DeltaParams, *this); 
@@ -56,11 +61,12 @@ private:
 	UPROPERTY()
 	TArray<FInv_InventoryEntry> Entries;
 
-	// Gets owning component 
+	// Pointer to the component that owns this array 
 	UPROPERTY(NotReplicated)
 	TObjectPtr<UActorComponent> OwnerComponent; 
 };
 
+// Required boilerplate 
 template<>
 struct TStructOpsTypeTraits<FInv_InventoryFastArray> : TStructOpsTypeTraitsBase2<FInv_InventoryFastArray>
 {
