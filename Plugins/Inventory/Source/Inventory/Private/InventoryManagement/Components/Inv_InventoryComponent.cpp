@@ -33,8 +33,18 @@ void UInv_InventoryComponent::BeginPlay()
 
 void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 {
-	// Broadcasts delegate when function is called 
-	NoRoomInventory.Broadcast(); 
+	// Calls HasRoomForItem function on InventoryBase 
+	FInv_SlotAvailabilityResult Result = InventoryMenu->HasRoomForItem(ItemComponent); 
+
+	// Checks total slots remaining 
+	if (Result.TotalRoomToFill == 0)
+	{
+		// Broadcasts delegate when function is called 
+		NoRoomInventory.Broadcast();
+		return; 
+	}
+
+	// TODO: Actually add the item to the inventory 
 }
 
 void UInv_InventoryComponent::ConstructInventory()
