@@ -7,6 +7,7 @@
 
 class UInv_InventoryComponent;
 class UInv_InventoryItem;
+class UInv_ItemComponent;
 
 // A single entry in the inventory 
 USTRUCT(BlueprintType)
