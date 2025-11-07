@@ -31,6 +31,12 @@ void UInv_InventoryComponent::BeginPlay()
 	ConstructInventory(); 
 }
 
+void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
+{
+	// Broadcasts delegate when function is called 
+	NoRoomInventory.Broadcast(); 
+}
+
 void UInv_InventoryComponent::ConstructInventory()
 {
 	// Get Player controller by casting the result of the actor function GetOwner

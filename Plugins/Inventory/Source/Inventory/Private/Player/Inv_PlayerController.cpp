@@ -72,8 +72,12 @@ void AInv_PlayerController::SetupInputComponent()
 
 void AInv_PlayerController::PrimaryInteract()
 {
-
-	UE_LOG(LogTemp, Log, TEXT("Primary Interact"));
+	if (!ThisActor.IsValid()) return;
+	// Gets inventory component and checks if valid 
+	UInv_ItemComponent* ItemComp = ThisActor->FindComponentByClass<UInv_ItemComponent>();
+	if (!IsValid(ItemComp) || !InventoryComponent.IsValid()) return;
+	// Calls tryadditem function on inventorycomponent which broadcasts delegate 
+	InventoryComponent->TryAddItem(ItemComp); 
 }
 
 void AInv_PlayerController::CreateHUDWidget()
