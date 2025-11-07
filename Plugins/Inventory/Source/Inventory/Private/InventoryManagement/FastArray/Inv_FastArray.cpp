@@ -2,6 +2,7 @@
 
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 #include "Items/Inv_InventoryItem.h"
+#include "Items/Components/Inv_ItemComponent.h"
 
 TArray<UInv_InventoryItem*> FInv_InventoryFastArray::GetAllItems() const
 {
@@ -47,8 +48,24 @@ void FInv_InventoryFastArray::PostReplicatedAdd(const TArrayView<int32> AddedInd
 
 UInv_InventoryItem* FInv_InventoryFastArray::AddEntry(UInv_ItemComponent* ItemComponent)
 {
-	// TODO: Implement when item component is complete 
-	return nullptr; 
+	// ensures it is only called on valid component and only on the server. originates from authoritative source 
+	check(OwnerComponent);
+	AActor* OwningActor = OwnerComponent->GetOwner();
+	check(OwningActor->HasAuthority());
+	// cast owner component which owns array to inventory component 
+	UInv_InventoryComponent* IC = Cast<UInv_InventoryComponent>(OwnerComponent);
+	if (!IsValid(IC)) return nullptr;
+
+	// New entry is added to entries 
+	FInv_InventoryEntry& NewEntry = Entries.AddDefaulted_GetRef();
+	// Item is assigned to entry by checking itemcomponent, then getting manifest, then calling manifest 
+	NewEntry.Item = ItemComponent->GetItemManifest().Manifest(OwningActor);
+
+	// Required for replication 
+	IC->AddRepSubObj(NewEntry.Item);
+	MarkItemDirty(NewEntry);
+
+	return NewEntry.Item;
 }
 
 UInv_InventoryItem* FInv_InventoryFastArray::AddEntry(UInv_InventoryItem* Item)

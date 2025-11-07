@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "InventoryManagement/FastArray/Inv_FastArray.h"
 #include "Inv_InventoryComponent.generated.h"
 
 class UInv_ItemComponent;
@@ -25,6 +26,8 @@ public:
 	// Constructor 
 	UInv_InventoryComponent();
 
+	// Handles Replication 
+	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 	// Trys to add item to inventory 
 	UFUNCTION(BlueprintCallable, BlueprintAuthorityOnly, Category="Inventory") 
 	void TryAddItem(UInv_ItemComponent* ItemComponent);
@@ -37,7 +40,10 @@ public:
 	void Server_AddStacksToItem(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder);
 	
 	// Toggle inventory 
-	void ToggleInventoryMenu(); 
+	void ToggleInventoryMenu();
+
+	// Required for replication 
+	void AddRepSubObj(UObject* SubObj);
 
 	FInventoryItemChange OnItemAdded;
 	FInventoryItemChange OnItemRemoved;
@@ -52,6 +58,10 @@ private:
 	
 	// Creates inventory 
 	void ConstructInventory();
+
+	// Includes Fast Array to access inventory 
+	UPROPERTY(Replicated)
+	FInv_InventoryFastArray InventoryList; 
 
 	// Inventory class 
 	UPROPERTY()

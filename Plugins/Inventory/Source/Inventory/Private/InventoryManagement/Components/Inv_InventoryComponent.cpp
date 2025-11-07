@@ -2,12 +2,25 @@
 
 
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
+
+#include "Net/UnrealNetwork.h"
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 
 UInv_InventoryComponent::UInv_InventoryComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+	bInventoryMenuOpen = false;
+	// Sets replication 
+	SetIsReplicatedByDefault(true); 
+	bReplicateUsingRegisteredSubObjectList = true;
+}
 
+void UInv_InventoryComponent::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	// Needed for replication 
+	DOREPLIFETIME(ThisClass, InventoryList);
 }
 
 void UInv_InventoryComponent::ToggleInventoryMenu()
@@ -20,6 +33,15 @@ void UInv_InventoryComponent::ToggleInventoryMenu()
 	else
 	{
 		OpenInventoryMenu();
+	}
+}
+
+void UInv_InventoryComponent::AddRepSubObj(UObject* SubObj)
+{
+	// Needed for replication 
+	if (IsUsingRegisteredSubObjectList() && IsReadyForReplication() && IsValid(SubObj))
+	{
+		AddReplicatedSubObject(SubObj);		
 	}
 }
 
@@ -59,12 +81,18 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 
 void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount)
 {
+	// Calls Fast Array function to add entry based on item component
+	// This is then replicated 
+	UInv_InventoryItem* NewItem = InventoryList.AddEntry(ItemComponent);
+
+	// Tell item component to destroy its owning actor 
 }
 
 
 void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount,
 	int32 Remainder)
 {
+	
 }
 
 void UInv_InventoryComponent::ConstructInventory()
