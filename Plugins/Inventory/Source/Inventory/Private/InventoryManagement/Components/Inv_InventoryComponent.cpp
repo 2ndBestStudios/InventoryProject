@@ -36,7 +36,7 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 	// Calls HasRoomForItem function on InventoryBase 
 	FInv_SlotAvailabilityResult Result = InventoryMenu->HasRoomForItem(ItemComponent); 
 
-	// Checks total slots remaining 
+	// Checks if inventory is full 
 	if (Result.TotalRoomToFill == 0)
 	{
 		// Broadcasts delegate when function is called 
@@ -44,7 +44,27 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 		return; 
 	}
 
-	// TODO: Actually add the item to the inventory 
+	// Only adds stacks to an item that already exists in the inventory 
+	if (Result.Item.IsValid() && Result.bStackable)
+	{
+		Server_AddStacksToItem(ItemComponent, Result.TotalRoomToFill, Result.Remainder);
+	}
+	// This item type doesn't exist in the inventory. Create a new one and update any slots 
+	else if (Result.TotalRoomToFill > 0)
+	{
+		Server_AddNewItem(ItemComponent, Result.bStackable ? Result.TotalRoomToFill : 0);
+	}
+	
+}
+
+void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount)
+{
+}
+
+
+void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount,
+	int32 Remainder)
+{
 }
 
 void UInv_InventoryComponent::ConstructInventory()
