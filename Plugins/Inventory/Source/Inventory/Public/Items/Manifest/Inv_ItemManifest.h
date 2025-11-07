@@ -3,7 +3,7 @@
 #include "CoreMinimal.h"
 #include "Types/Inv_GridTypes.h"
 #include "StructUtils/InstancedStruct.h"
-
+#include "GameplayTagContainer.h"
 #include "Inv_ItemManifest.generated.h"
 
 // The Item manifest contains all the necessary data for creating a new Inventory Item
@@ -25,5 +25,9 @@ private:
 	// Assigns item category 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	EInv_ItemCategory ItemCategory{EInv_ItemCategory::None};
+
+	// Gameplay tag accessibility is added to item manifest 
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	FGameplayTag ItemType; 
 };
 
