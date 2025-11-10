@@ -15,6 +15,7 @@
 #include "Widgets/Inventory/GridSlots/Inv_GridSlot.h"
 #include "Widgets/Utils/Inv_WidgetUtils.h"
 #include "Items/Manifest/Inv_ItemManifest.h"
+#include "Widgets/Inventory/SlottedItems/Inv_SlottedItem.h"
 
 void UInv_InventoryGrid::NativeOnInitialized()
 {
@@ -67,10 +68,58 @@ void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 
 void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem)
 {
+	// Loops through SlotAvailabilities from SlotAvailabilityResult. For each available slot it checks index, stackable, and amount to fill 
+	for (const auto& Availability : Result.SlotAvailabilities)
+	{
+		AddItemAtIndex(NewItem, Availability.Index, Result.bStackable, Availability.AmountToFill);
+	}
+}
+
+void UInv_InventoryGrid::AddItemAtIndex(UInv_InventoryItem* Item, const int32 Index, const bool bStackable,
+	const int32 StackAmount)
+{
 	// Uses NewItem (InventoryItem) to get its ItemManifest, which then returns the GridFragment that was set
-	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(NewItem, FragmentTags::GridFragment);
-	const FInv_ImageFragment* ImageFragment = GetFragment<FInv_ImageFragment>(NewItem, FragmentTags::IconFragment);
+	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(Item, FragmentTags::GridFragment);
+	const FInv_ImageFragment* ImageFragment = GetFragment<FInv_ImageFragment>(Item, FragmentTags::IconFragment);
 	if (!GridFragment || !ImageFragment) return;
+	// Calls below function 
+	UInv_SlottedItem* SlottedItem = CreateSlottedItem(Item, bStackable, StackAmount, GridFragment, ImageFragment, Index); 
+}
+
+UInv_SlottedItem* UInv_InventoryGrid::CreateSlottedItem(UInv_InventoryItem* Item, const bool bStackable,
+	const int32 StackAmount, const FInv_GridFragment* GridFragment, const FInv_ImageFragment* ImageFragment,
+	const int32 Index)
+{
+	// Creates a GridSlotItem Widget based on SlottedItem with owner set by PlayerController 
+	UInv_SlottedItem* SlottedItem = CreateWidget<UInv_SlottedItem>(GetOwningPlayer(), SlottedItemClass);
+	// Sets the inventory item for the GridSlot 
+	SlottedItem->SetInventoryItem(Item);
+	// Creates GridSlotItem image 
+	SetSlottedItemImage(SlottedItem,GridFragment,ImageFragment);
+	// Sets index of GridSlotItem 
+	SlottedItem->SetGridIndex(Index);
+	// Returns the Slotted Item
+	return SlottedItem;
+}
+
+void UInv_InventoryGrid::SetSlottedItemImage(const UInv_SlottedItem* SlottedItem, const FInv_GridFragment* GridFragment,
+                                             const FInv_ImageFragment* ImageFragment) const
+{
+	// Create an empty brush that is then set to the ImageFragment. Set brush value to draw as image 
+	FSlateBrush Brush;
+	Brush.SetResourceObject(ImageFragment->GetIcon());
+	Brush.DrawAs = ESlateBrushDrawType::Image;
+	// Calls below function
+	Brush.ImageSize = GetDrawSize(GridFragment);
+	// Calls the individual GridSlot item to set its own ImageBrush 
+	SlottedItem->SetImageBrush(Brush);
+}
+
+FVector2D UInv_InventoryGrid::GetDrawSize(const FInv_GridFragment* GridFragment) const 
+{
+	// Takes TileSize of Grid, subtracts from padding of fragment, and multiples by 2 for either side 
+	const float IconTileWidth = TileSize - GridFragment->GetGridPadding() * 2;
+	return GridFragment->GetGridSize() * IconTileWidth;
 }
 
 void UInv_InventoryGrid::ConstructGrid()
