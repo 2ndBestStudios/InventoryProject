@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "RHIValidationTransientResourceAllocator.h"
 
 #include "Inv_ItemFragment.generated.h"
 
@@ -52,4 +53,22 @@ private:
 	float GridPadding{0.f};
 
 	
+};
+
+USTRUCT(BlueprintType)
+struct FInv_ImageFragment : public FInv_ItemFragment
+{
+	GENERATED_BODY()
+
+	// Getter 
+	UTexture2D* GetIcon() const { return Icon; }
+	
+private:
+
+	// Provides icon for item
+	UPROPERTY(EditAnywhere, Category="Inventory")
+	TObjectPtr<UTexture2D> Icon{nullptr};
+	// Can be adjusted for inspecting the item with widget 
+	UPROPERTY(EditAnywhere, Category="Inventory")
+	FVector2D IconDimensions{44.f, 44.f};
 };
