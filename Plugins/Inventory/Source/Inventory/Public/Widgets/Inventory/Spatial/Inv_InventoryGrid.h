@@ -7,6 +7,9 @@
 #include "Types/Inv_GridTypes.h"
 #include "Inv_InventoryGrid.generated.h"
 
+struct FInv_ItemManifest;
+class UInv_ItemComponent;
+class UInv_InventoryItem;
 class UInv_InventoryComponent;
 class UCanvasPanel;
 class UInv_GridSlot;
@@ -25,12 +28,19 @@ public:
 	// Getter for item category 
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
 
+	// Overload for HasRoomForItem
+	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_ItemComponent* ItemComponent);
+
 	// Callback function for the additem delegate from inventory component 
 	UFUNCTION()
 	void AddItem(UInv_InventoryItem* Item);  
 	
 private:
 
+	// Overload for checking HasRoomForItem
+	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);
+	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest); 
+	
 	// Gives a reference for the inventory component 
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
 	

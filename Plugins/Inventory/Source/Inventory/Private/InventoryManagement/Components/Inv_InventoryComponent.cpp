@@ -55,7 +55,8 @@ void UInv_InventoryComponent::BeginPlay()
 
 void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 {
-	// Calls HasRoomForItem function on InventoryBase 
+	// Calls HasRoomForItem function on SpatialInventory which overrides the Parent function
+	// Client first checks if there's even room in inventory before replicating any changes 
 	FInv_SlotAvailabilityResult Result = InventoryMenu->HasRoomForItem(ItemComponent); 
 
 	// Checks if inventory is full 
@@ -89,6 +90,7 @@ void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponen
 	// Needed because for these modes the player is the host, not the client 
 	if (GetOwner()->GetNetMode() == NM_ListenServer || GetOwner()->GetNetMode() == NM_Standalone)
 	{
+		// Broadcasts to the InventoryGrid the actual item to do changes with it 
 		OnItemAdded.Broadcast(NewItem);
 	}
 	

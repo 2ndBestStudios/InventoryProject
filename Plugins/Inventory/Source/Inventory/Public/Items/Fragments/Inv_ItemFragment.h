@@ -2,7 +2,6 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
-#include "RHIValidationTransientResourceAllocator.h"
 
 #include "Inv_ItemFragment.generated.h"
 
