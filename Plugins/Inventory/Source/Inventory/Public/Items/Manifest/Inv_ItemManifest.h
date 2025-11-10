@@ -9,6 +9,7 @@
 // The Item manifest contains all the necessary data for creating a new Inventory Item
 
 class UInv_InventoryItem;
+struct FInv_ItemFragment;
 
 USTRUCT(BlueprintType)
 struct INVENTORY_API FInv_ItemManifest
@@ -22,6 +23,10 @@ struct INVENTORY_API FInv_ItemManifest
 	
 private:
 
+	// Holds an array of instanced struct item fragments 
+	UPROPERTY(EditAnywhere, Category="Inventory", meta = (ExcludeBaseStruct))
+	TArray<TInstancedStruct<FInv_ItemFragment>> Fragments;
+	
 	// Assigns item category 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	EInv_ItemCategory ItemCategory{EInv_ItemCategory::None};
