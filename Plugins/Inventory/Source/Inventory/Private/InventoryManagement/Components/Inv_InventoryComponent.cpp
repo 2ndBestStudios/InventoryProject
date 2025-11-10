@@ -6,7 +6,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 
-UInv_InventoryComponent::UInv_InventoryComponent()
+UInv_InventoryComponent::UInv_InventoryComponent() : InventoryList(this)
 {
 	PrimaryComponentTick.bCanEverTick = false;
 	bInventoryMenuOpen = false;
@@ -85,7 +85,14 @@ void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponen
 	// This is then replicated 
 	UInv_InventoryItem* NewItem = InventoryList.AddEntry(ItemComponent);
 
-	// Tell item component to destroy its owning actor 
+	// Handles broadcasting the delegate for listen and standalone
+	// Needed because for these modes the player is the host, not the client 
+	if (GetOwner()->GetNetMode() == NM_ListenServer || GetOwner()->GetNetMode() == NM_Standalone)
+	{
+		OnItemAdded.Broadcast(NewItem);
+	}
+	
+	// Tell item component to destroy its owning actor
 }
 
 

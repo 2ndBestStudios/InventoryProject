@@ -17,9 +17,15 @@ class INVENTORY_API UInv_InventoryItem : public UObject
 
 public:
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
+	// Needed for replicating subobjects 
+	virtual bool IsSupportedForNetworking() const override { return true; }
 
 	// Sets the item manifest 
-	void SetItemManifest(const FInv_ItemManifest Manifest); 
+	void SetItemManifest(const FInv_ItemManifest Manifest);
+
+	// Getter for item manifest. One returns a reference that cannot be changed. The other returns one that can be changed
+	const FInv_ItemManifest& GetItemManifest() const { return ItemManifest.Get<FInv_ItemManifest>(); }
+	FInv_ItemManifest& GetItemManifestMutable() { return ItemManifest.GetMutable<FInv_ItemManifest>(); }
 
 private:
 

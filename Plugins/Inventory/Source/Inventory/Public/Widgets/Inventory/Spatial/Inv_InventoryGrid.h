@@ -7,6 +7,7 @@
 #include "Types/Inv_GridTypes.h"
 #include "Inv_InventoryGrid.generated.h"
 
+class UInv_InventoryComponent;
 class UCanvasPanel;
 class UInv_GridSlot;
 /**
@@ -23,8 +24,16 @@ public:
 	
 	// Getter for item category 
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
+
+	// Callback function for the additem delegate from inventory component 
+	UFUNCTION()
+	void AddItem(UInv_InventoryItem* Item);  
 	
 private:
+
+	// Gives a reference for the inventory component 
+	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
+	
 	// Constructs item grid 
 	void ConstructGrid(); 
 	
@@ -50,5 +59,8 @@ private:
 	int32 Columns;
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
-	float TileSize; 
+	float TileSize;
+
+	// Handles matching item category to inventory item 
+	bool MatchesCategory(const UInv_InventoryItem* Item) const; 
 };
