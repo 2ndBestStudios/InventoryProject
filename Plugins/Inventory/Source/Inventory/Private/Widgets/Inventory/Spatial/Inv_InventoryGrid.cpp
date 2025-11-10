@@ -40,10 +40,16 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_Invent
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemManifest& Manifest)
 {
 	FInv_SlotAvailabilityResult Result;
- 	Result.TotalRoomToFill = 1; 
+ 	Result.TotalRoomToFill = 1;
+
+	FInv_SlotAvailability SlotAvailability;
+	SlotAvailability.AmountToFill = 1;
+	SlotAvailability.Index = 0;
+
+	Result.SlotAvailabilities.Add(MoveTemp(SlotAvailability));
+	
  	return Result; 
 }
-
 
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 {
@@ -53,7 +59,13 @@ void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 	// Checks for Room for Items from Server broadcast 
 	FInv_SlotAvailabilityResult Result = HasRoomForItem(Item);
 
-	// Create a widget to show the item icon and add it to the correct spot on the grid 
+	// Allows us to start performing some actions based on the item 
+	AddItemToIndices(Result, Item);
+}
+
+void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem)
+{
+	//TODO: Get grid fragment to know how many grid spaces it'll take
 }
 
 void UInv_InventoryGrid::ConstructGrid()

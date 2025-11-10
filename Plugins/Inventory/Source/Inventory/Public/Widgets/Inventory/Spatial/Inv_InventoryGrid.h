@@ -39,7 +39,10 @@ private:
 
 	// Overload for checking HasRoomForItem
 	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);
-	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest); 
+	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest);
+
+	// Function to start performing actions on our item 
+	void AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem); 
 	
 	// Gives a reference for the inventory component 
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
