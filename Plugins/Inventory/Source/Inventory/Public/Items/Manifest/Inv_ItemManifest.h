@@ -16,11 +16,15 @@ struct INVENTORY_API FInv_ItemManifest
 {
 	GENERATED_BODY()
 
-	// Creates a newobject 
+	// Creates a NewObject
 	UInv_InventoryItem* Manifest(UObject* NewOuter);
-	// Returns item category 
+	// Returns ItemCategory 
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
-	
+	// Returns GameplayTag
+	FGameplayTag GetItemType() const { return ItemType; }
+	// Template to get fragments by comparing with tags
+	template<typename T> requires std::derived_from<T, FInv_ItemFragment>
+	const T* GetFragmentOfTypeWithTag(const FGameplayTag& FragmentTag) const;
 private:
 
 	// Holds an array of instanced struct item fragments 
@@ -36,3 +40,21 @@ private:
 	FGameplayTag ItemType; 
 };
 
+template<typename T>
+requires std::derived_from<T, FInv_ItemFragment>
+const T* FInv_ItemManifest::GetFragmentOfTypeWithTag(const FGameplayTag& FragmentTag) const 
+{
+	// Loops through entire Instanced Struct Array of Fragments 
+	for (const TInstancedStruct<FInv_ItemFragment>& Fragment : Fragments)
+	{
+		// Returns the pointer for each fragment of the type fragment type searching for 
+		if (const T* FragmentPtr = Fragment.GetPtr<T>())
+		{
+			// Checks each fragment pointer and calls GetFragmentTag on ItemFragment, which then calls helper function for tags 
+			if (!FragmentPtr->GetFragmentTag().MatchesTagExact(FragmentTag)) continue; 
+			return FragmentPtr;
+		}
+	}
+	
+	return nullptr;
+}

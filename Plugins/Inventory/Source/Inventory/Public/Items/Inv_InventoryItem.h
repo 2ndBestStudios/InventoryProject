@@ -33,3 +33,15 @@ private:
 	UPROPERTY(VisibleAnywhere, meta=(BaseStruct = "/Script/Inventory.Inv_ItemManifest"), Replicated)
 	FInstancedStruct ItemManifest; 
 };
+
+// Template function to GetFragment of an item by the GameplayTag returning the FragmentType  
+template <typename FragmentType>
+const FragmentType* GetFragment(const UInv_InventoryItem* Item, const FGameplayTag& Tag)
+{
+	// Checks if valid and then gets ItemManifest 
+	if (!IsValid(Item)) return nullptr;
+	const FInv_ItemManifest& Manifest = Item->GetItemManifest();
+	// Calls template function on ItemManifest to get FragmentType 
+	return Manifest.GetFragmentOfTypeWithTag<FragmentType>(Tag);
+	
+}
