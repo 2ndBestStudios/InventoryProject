@@ -147,10 +147,16 @@ void UInv_InventoryGrid::UpdateGridSlots(UInv_InventoryItem* NewItem, const int3
 {
 	// Checks if there's a valid index 
 	check(GridSlots.IsValidIndex(Index));
-	// Retrieves the GridSlot needed from the Map by Index 
-	UInv_GridSlot* GridSlot = GridSlots[Index];
-	// Updates the background texture 
-	GridSlot->SetOccupiedTexture(); 
+
+	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(NewItem, FragmentTags::GridFragment);
+	if (!GridFragment) return;
+
+	const FIntPoint Dimensions = GridFragment ? GridFragment->GetGridSize() : FIntPoint(1,1);
+
+	UInv_InventoryStatics::ForEach2D(GridSlots,Index, Dimensions, Columns, [](UInv_GridSlot* GridSlot)
+	{
+		GridSlot->SetOccupiedTexture(); 
+	});
 }
 
 void UInv_InventoryGrid::ConstructGrid()
