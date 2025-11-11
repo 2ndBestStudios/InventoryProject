@@ -68,10 +68,12 @@ void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
 
 void UInv_InventoryGrid::AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem)
 {
-	// Loops through SlotAvailabilities from SlotAvailabilityResult. For each available slot it checks index, stackable, and amount to fill 
+	// Loops through SlotAvailabilities from SlotAvailabilityResult. For each available slot it checks index, stackable, and amount to fill
+	// Then updates the background of the GridSlot 
 	for (const auto& Availability : Result.SlotAvailabilities)
 	{
 		AddItemAtIndex(NewItem, Availability.Index, Result.bStackable, Availability.AmountToFill);
+		UpdateGridSlots(NewItem, Availability.Index); 
 	}
 }
 
@@ -139,6 +141,16 @@ void UInv_InventoryGrid::AddSlottedItemToCanvas(const int32 Index, const FInv_Gr
 	const FVector2D DrawPosWithPadding = DrawPos + FVector2D(GridFragment->GetGridPadding());
 	// Sets position 
 	CanvasSlot->SetPosition(DrawPosWithPadding);
+}
+
+void UInv_InventoryGrid::UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index)
+{
+	// Checks if there's a valid index 
+	check(GridSlots.IsValidIndex(Index));
+	// Retrieves the GridSlot needed from the Map by Index 
+	UInv_GridSlot* GridSlot = GridSlots[Index];
+	// Updates the background texture 
+	GridSlot->SetOccupiedTexture(); 
 }
 
 void UInv_InventoryGrid::ConstructGrid()

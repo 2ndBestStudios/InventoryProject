@@ -66,7 +66,10 @@ private:
 	FVector2D GetDrawSize(const FInv_GridFragment* GridFragment) const ;
 
 	// Function for adding items to canvas panel 
-	void AddSlottedItemToCanvas(const int32 Index, const FInv_GridFragment* GridFragment, UInv_SlottedItem* SlottedItem) const; 
+	void AddSlottedItemToCanvas(const int32 Index, const FInv_GridFragment* GridFragment, UInv_SlottedItem* SlottedItem) const;
+
+	// Updates the background of the GridSlot 
+	void UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index); 
 	
 	// Gives a reference for the inventory component 
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
