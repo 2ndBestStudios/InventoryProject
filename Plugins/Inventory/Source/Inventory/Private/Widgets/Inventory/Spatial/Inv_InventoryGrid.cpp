@@ -83,7 +83,11 @@ void UInv_InventoryGrid::AddItemAtIndex(UInv_InventoryItem* Item, const int32 In
 	const FInv_ImageFragment* ImageFragment = GetFragment<FInv_ImageFragment>(Item, FragmentTags::IconFragment);
 	if (!GridFragment || !ImageFragment) return;
 	// Calls below function 
-	UInv_SlottedItem* SlottedItem = CreateSlottedItem(Item, bStackable, StackAmount, GridFragment, ImageFragment, Index); 
+	UInv_SlottedItem* SlottedItem = CreateSlottedItem(Item, bStackable, StackAmount, GridFragment, ImageFragment, Index);
+	// Add Item to canvas 
+	AddSlottedItemToCanvas(Index, GridFragment, SlottedItem);
+	// Adds Item to Map for data manipulation later 
+	SlottedItems.Add(Index,SlottedItem);
 }
 
 UInv_SlottedItem* UInv_InventoryGrid::CreateSlottedItem(UInv_InventoryItem* Item, const bool bStackable,
@@ -120,6 +124,21 @@ FVector2D UInv_InventoryGrid::GetDrawSize(const FInv_GridFragment* GridFragment)
 	// Takes TileSize of Grid, subtracts from padding of fragment, and multiples by 2 for either side 
 	const float IconTileWidth = TileSize - GridFragment->GetGridPadding() * 2;
 	return GridFragment->GetGridSize() * IconTileWidth;
+}
+
+void UInv_InventoryGrid::AddSlottedItemToCanvas(const int32 Index, const FInv_GridFragment* GridFragment,
+	UInv_SlottedItem* SlottedItem) const
+{
+	// Adds Child 
+	CanvasPanel->AddChild(SlottedItem);
+	// Sets the slot of the canvas panel, then draws based on GridFragmentSize 
+	UCanvasPanelSlot* CanvasSlot = UWidgetLayoutLibrary::SlotAsCanvasSlot(SlottedItem);
+	CanvasSlot->SetSize(GetDrawSize(GridFragment));
+	// Calculates DrawPosition based on Index and Column #. Then incorporates padding 
+	const FVector2D DrawPos = UInv_WidgetUtils::GetPositionFromIndex(Index, Columns) * TileSize;
+	const FVector2D DrawPosWithPadding = DrawPos + FVector2D(GridFragment->GetGridPadding());
+	// Sets position 
+	CanvasSlot->SetPosition(DrawPosWithPadding);
 }
 
 void UInv_InventoryGrid::ConstructGrid()

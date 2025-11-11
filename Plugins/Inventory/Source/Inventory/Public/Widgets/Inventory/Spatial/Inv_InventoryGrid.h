@@ -64,6 +64,9 @@ private:
 	
 	// Gets the DrawSize of the image based on GridSlot values 
 	FVector2D GetDrawSize(const FInv_GridFragment* GridFragment) const ;
+
+	// Function for adding items to canvas panel 
+	void AddSlottedItemToCanvas(const int32 Index, const FInv_GridFragment* GridFragment, UInv_SlottedItem* SlottedItem) const; 
 	
 	// Gives a reference for the inventory component 
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
@@ -81,7 +84,11 @@ private:
 
 	// Class used for drawing GridSlot widget 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
-	TSubclassOf<UInv_SlottedItem> SlottedItemClass; 
+	TSubclassOf<UInv_SlottedItem> SlottedItemClass;
+
+	// Map of all SlottedItems in inventory 
+	UPROPERTY()
+	TMap<int32, TObjectPtr<UInv_SlottedItem>> SlottedItems; 
 	
 	UPROPERTY()
 	TArray<TObjectPtr<UInv_GridSlot>> GridSlots;

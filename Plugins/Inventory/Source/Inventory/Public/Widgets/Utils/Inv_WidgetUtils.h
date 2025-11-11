@@ -17,5 +17,7 @@ class INVENTORY_API UInv_WidgetUtils : public UBlueprintFunctionLibrary
 public:
 
 	// Allows us to calculate index location based on passed in parameters. FIntPoint can take X & Y 
-	static int32 GetIndexFromPosition(const FIntPoint& Position, const int32 Columns); 
+	static int32 GetIndexFromPosition(const FIntPoint& Position, const int32 Columns);
+	// Allows us to get x,y position from a given index 
+	static FIntPoint GetPositionFromIndex(const int32 Index, const int32 Columns);
 };
