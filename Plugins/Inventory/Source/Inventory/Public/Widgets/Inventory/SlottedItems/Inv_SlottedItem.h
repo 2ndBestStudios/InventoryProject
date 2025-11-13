@@ -8,6 +8,7 @@
 
 class UInv_InventoryItem;
 class UImage;
+class UTextBlock;
 /**
  * 
  */
@@ -29,14 +30,22 @@ public:
 	void SetInventoryItem(UInv_InventoryItem* Item); 
 	UInv_InventoryItem* GetInventoryItem() const { return InventoryItem.Get(); }
 	// Sets ImageIcon's brush based on passed in value  
-	void SetImageBrush (const FSlateBrush& Brush) const; 
+	void SetImageBrush (const FSlateBrush& Brush) const;
+
+	// Updates the StackCount 
+	void UpdateStackCount(int32 StackCount); 
 	
 private:
 
-	// Image of item
+	// Image of Item
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UImage> Image_Icon;
-	// Properties of item
+
+	// Number indicating ItemStackCount
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> Text_StackCount;
+	
+	// Properties of Item
 	int32 GridIndex;
 	FIntPoint GridDimensions;
 	bool bIsStackable {false};

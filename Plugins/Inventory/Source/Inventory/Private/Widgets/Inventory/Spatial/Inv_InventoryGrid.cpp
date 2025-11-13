@@ -43,13 +43,19 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_Invent
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemManifest& Manifest)
 {
 	FInv_SlotAvailabilityResult Result;
- 	Result.TotalRoomToFill = 1;
+ 	Result.TotalRoomToFill = 7;
+	Result.bStackable = true;
 
 	FInv_SlotAvailability SlotAvailability;
-	SlotAvailability.AmountToFill = 1;
+	SlotAvailability.AmountToFill = 2;
 	SlotAvailability.Index = 0;
-
 	Result.SlotAvailabilities.Add(MoveTemp(SlotAvailability));
+
+	FInv_SlotAvailability SlotAvailability2;
+	SlotAvailability2.AmountToFill = 5;
+	SlotAvailability2.Index = 1;
+	Result.SlotAvailabilities.Add(MoveTemp(SlotAvailability2));
+	
 	
  	return Result; 
 }
@@ -104,6 +110,12 @@ UInv_SlottedItem* UInv_InventoryGrid::CreateSlottedItem(UInv_InventoryItem* Item
 	SetSlottedItemImage(SlottedItem,GridFragment,ImageFragment);
 	// Sets index of GridSlotItem 
 	SlottedItem->SetGridIndex(Index);
+
+	// Sets the Stackable Property. Then checks if it's true. If it is, store StackAmount if not set to 0. Update stack
+	SlottedItem->SetIsStackable(bStackable);
+	const int32 StackUpdateAmount = bStackable ? StackAmount : 0;
+	SlottedItem->UpdateStackCount(StackUpdateAmount);
+	
 	// Returns the Slotted Item
 	return SlottedItem;
 }
@@ -153,7 +165,7 @@ void UInv_InventoryGrid::UpdateGridSlots(UInv_InventoryItem* NewItem, const int3
 
 	const FIntPoint Dimensions = GridFragment ? GridFragment->GetGridSize() : FIntPoint(1,1);
 
-	UInv_InventoryStatics::ForEach2D(GridSlots,Index, Dimensions, Columns, [](UInv_GridSlot* GridSlot)
+	UInv_InventoryStatics::ForEach2D(GridSlots, Index, Dimensions, Columns, [](UInv_GridSlot* GridSlot)
 	{
 		GridSlot->SetOccupiedTexture(); 
 	});
@@ -165,9 +177,9 @@ void UInv_InventoryGrid::ConstructGrid()
 	GridSlots.Reserve(Rows * Columns);
 
 	// Loops through all rows and all columns 
-	for (int32 j = 0; j < Rows; j++)
+	for (int32 j = 0; j < Rows; ++j)
 	{
-		for (int32 i = 0; i < Columns; i++)
+		for (int32 i = 0; i < Columns; ++i)
 		{
 			// Creates a widget for each loop passthrough which is then added to canvas 
 			UInv_GridSlot* GridSlot = CreateWidget<UInv_GridSlot>(this, GridSlotClass);
