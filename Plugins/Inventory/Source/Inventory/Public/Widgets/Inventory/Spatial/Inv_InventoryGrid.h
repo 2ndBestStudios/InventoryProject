@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Items/Manifest/Inv_ItemManifest.h"
 #include "Types/Inv_GridTypes.h"
+#include "Widgets/Inventory/GridSlots/Inv_GridSlot.h"
 #include "Widgets/Inventory/SlottedItems/Inv_SlottedItem.h"
 #include "Inv_InventoryGrid.generated.h"
 
@@ -73,6 +75,12 @@ private:
 
 	// Checks if a current index is already filled 
 	bool IsIndexClaimed(const TSet<int32>& CheckedIndices, const int32 Index) const;
+
+	// Checks if there is aroom at index 
+	bool HasRoomAtIndex(const UInv_GridSlot* GridSlot, const FIntPoint& Dimensions);
+
+	// Checks item manifest for item dimensions 
+	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
 	
 	// Gives a reference for the InventoryComponent 
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
