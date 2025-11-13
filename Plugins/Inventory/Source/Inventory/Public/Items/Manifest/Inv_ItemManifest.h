@@ -25,7 +25,7 @@ struct INVENTORY_API FInv_ItemManifest
 	// Template to get fragments by comparing with tags
 	template<typename T> requires std::derived_from<T, FInv_ItemFragment>
 	const T* GetFragmentOfTypeWithTag(const FGameplayTag& FragmentTag) const;
-
+	// Simpler template to get fragment 
 	template<typename T> requires std::derived_from<T, FInv_ItemFragment>
 	const T* GetFragmentOfType() const;
 	
