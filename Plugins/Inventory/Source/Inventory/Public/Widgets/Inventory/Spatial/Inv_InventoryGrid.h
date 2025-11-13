@@ -68,13 +68,13 @@ private:
 	// Function for adding items to canvas panel 
 	void AddSlottedItemToCanvas(const int32 Index, const FInv_GridFragment* GridFragment, UInv_SlottedItem* SlottedItem) const;
 
-	// Updates the background of the GridSlot 
-	void UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index); 
+	// Updates the properties of a GridSlot 
+	void UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index, bool bStackableItem, const int32 StackAmount); 
 	
-	// Gives a reference for the inventory component 
+	// Gives a reference for the InventoryComponent 
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
 	
-	// Creates item category 
+	// Creates ItemCategory 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category="Inventory")
 	EInv_ItemCategory ItemCategory;
 
