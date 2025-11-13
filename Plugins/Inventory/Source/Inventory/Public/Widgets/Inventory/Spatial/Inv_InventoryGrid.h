@@ -89,7 +89,7 @@ private:
 	bool HasValidItem(const UInv_GridSlot* GridSlot) const;
 
 	// Checks if GridSlot & SubGridSlot match 
-	bool IsUpperLeftSlot(const UInv_GridSlot* GridSlot, const UInv_GridSlot* SubGridSlot) const; 
+	bool IsUpperLeftSlot(const UInv_GridSlot* GridSlot, const UInv_GridSlot* SubGridSlot) const;
 
 	// Checks item manifest for item dimensions 
 	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;

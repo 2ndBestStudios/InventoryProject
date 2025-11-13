@@ -20,12 +20,14 @@ public:
 	// Needed for replicating subobjects 
 	virtual bool IsSupportedForNetworking() const override { return true; }
 
-	// Sets the item manifest 
+	// Sets the ItemManifest 
 	void SetItemManifest(const FInv_ItemManifest Manifest);
 
-	// Getter for item manifest. One returns a reference that cannot be changed. The other returns one that can be changed
+	// Getter for ItemManifest. One returns a reference that cannot be changed. The other returns one that can be changed
 	const FInv_ItemManifest& GetItemManifest() const { return ItemManifest.Get<FInv_ItemManifest>(); }
 	FInv_ItemManifest& GetItemManifestMutable() { return ItemManifest.GetMutable<FInv_ItemManifest>(); }
+	// Helper function to check StackableFragment 
+	bool IsStackable() const; 
 
 private:
 
