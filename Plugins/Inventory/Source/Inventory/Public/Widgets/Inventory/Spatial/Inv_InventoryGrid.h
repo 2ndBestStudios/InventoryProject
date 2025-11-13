@@ -81,14 +81,16 @@ private:
 						const FIntPoint& Dimensions,
 						const TSet<int32>& CheckedIndices,
 						TSet<int32>& OutTentativelyClaimedIndices,
-						const FGameplayTag& ItemType);
+						const FGameplayTag& ItemType,
+						const int32 MaxStackSize);
 
 	// Checks SlotConstraints 
 	bool CheckSlotConstraints (const UInv_GridSlot* GridSLot,
 								const UInv_GridSlot* SubGridSlot,
 								const TSet<int32>& CheckedIndices,
 								TSet<int32>& OutTentativelyClaimedIndices,
-								const FGameplayTag& ItemType) const;
+								const FGameplayTag& ItemType,
+								const int32 MaxStackSize) const;
 
 	// Checks GridSlot for InventoryItem 
 	bool HasValidItem(const UInv_GridSlot* GridSlot) const;

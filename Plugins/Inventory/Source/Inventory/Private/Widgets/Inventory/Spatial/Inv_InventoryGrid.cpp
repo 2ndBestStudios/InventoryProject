@@ -65,7 +65,7 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 
 		TSet<int32> TentativelyClaimedIndices;
 		// Can the item fit here? (i.e. is it out of GridBounds)
-		if (!HasRoomAtIndex(GridSlot, GetItemDimensions(Manifest), CheckedIndices, TentativelyClaimedIndices, Manifest.GetItemType()))
+		if (!HasRoomAtIndex(GridSlot, GetItemDimensions(Manifest), CheckedIndices, TentativelyClaimedIndices, Manifest.GetItemType(), MaxStackSize))
 		{
 			continue;
 		}
@@ -87,7 +87,8 @@ bool UInv_InventoryGrid::HasRoomAtIndex(const UInv_GridSlot* GridSlot,
 		const FIntPoint& Dimensions,
 		const TSet<int32>& CheckedIndices,
 		TSet<int32>& OutTentativelyClaimedIndices,
-		const FGameplayTag& ItemType)
+		const FGameplayTag& ItemType,
+		const int32 MaxStackSize)
 {
 	// Is there room at this index? (i.e. is there other items in the way?)
 	// If we have room at index, loop through GridSlot indices by dimensions and columns, 
@@ -96,7 +97,7 @@ bool UInv_InventoryGrid::HasRoomAtIndex(const UInv_GridSlot* GridSlot,
 	UInv_InventoryStatics::ForEach2D(GridSlots,GridSlot->GetTileIndex(), Dimensions, Columns, [&](const UInv_GridSlot* SubGridSlot)
 	{
 		// If the slot is free, we can add to TentativelyClaimedIndices. If not, return false. 
-		if (CheckSlotConstraints(GridSlot, SubGridSlot, CheckedIndices, OutTentativelyClaimedIndices, ItemType))
+		if (CheckSlotConstraints(GridSlot, SubGridSlot, CheckedIndices, OutTentativelyClaimedIndices, ItemType, MaxStackSize))
 		{
 			OutTentativelyClaimedIndices.Add(SubGridSlot->GetTileIndex());
 		}
@@ -233,7 +234,8 @@ bool UInv_InventoryGrid::CheckSlotConstraints(const UInv_GridSlot* GridSlot,
 	const UInv_GridSlot* SubGridSlot,
 	const TSet<int32>& CheckedIndices,
 	TSet<int32>& OutTentativelyClaimedIndices,
-	const FGameplayTag& ItemType) const
+	const FGameplayTag& ItemType,
+	const int32 MaxStackSize) const
 {
 	// Index claimed? If there is no claim, return true. 
 	if (IsIndexClaimed(CheckedIndices, SubGridSlot->GetTileIndex())) return false;
@@ -256,8 +258,9 @@ bool UInv_InventoryGrid::CheckSlotConstraints(const UInv_GridSlot* GridSlot,
 	if (!DoesItemTypeMatch(SubItem, ItemType)) return false;
 	
 	// If stackable, is this slot at the max stack size already?
+	if (GridSlot->GetStackCount() >= MaxStackSize) return false;
 	
-	return false; 
+	return true; 
 }
 
 bool UInv_InventoryGrid::IsIndexClaimed(const TSet<int32>& CheckedIndices, const int32 Index) const
