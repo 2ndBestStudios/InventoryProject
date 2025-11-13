@@ -76,8 +76,17 @@ private:
 	// Checks if a current index is already filled 
 	bool IsIndexClaimed(const TSet<int32>& CheckedIndices, const int32 Index) const;
 
-	// Checks if there is aroom at index 
-	bool HasRoomAtIndex(const UInv_GridSlot* GridSlot, const FIntPoint& Dimensions);
+	// Checks if there is room at index 
+	bool HasRoomAtIndex(const UInv_GridSlot* GridSlot,
+						const FIntPoint& Dimensions,
+						const TSet<int32>& CheckedIndices,
+						TSet<int32>& OutTentativelyClaimedIndices);
+
+	// Checks SlotConstraints 
+	bool CheckSlotConstraints (const UInv_GridSlot* SubGridSlot, const TSet<int32>& CheckedIndices,TSet<int32>& OutTentativelyClaimedIndices) const;
+
+	// Checks GridSlot for InventoryItem 
+	bool HasValidItem(const UInv_GridSlot* GridSlot) const;
 
 	// Checks item manifest for item dimensions 
 	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;

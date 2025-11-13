@@ -62,20 +62,16 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		
 		// If an index is already filled, loop through next index 
 		if (IsIndexClaimed(CheckedIndices, GridSlot->GetTileIndex())) continue; 
-		
+
+		TSet<int32> TentativelyClaimedIndices;
 		// Can the item fit here? (i.e. is it out of GridBounds)
-		
-		if (!HasRoomAtIndex(GridSlot, GetItemDimensions(Manifest));
+		if (!HasRoomAtIndex(GridSlot, GetItemDimensions(Manifest), CheckedIndices, TentativelyClaimedIndices))
 		{
 			continue;
 		}
-		// Is there room at this index? (i.e. is there other items in the way?)
-		// Check any other important conditions - ForEach2D over a 2D range 
-			// Index claimed?
-			// Has valid item?
-			// Is this item the same type as the item we're trying to add?
-			// If so, is this a stackable item?
-			// If stackable, is this slot at the max stack size already?
+
+		CheckedIndices.Append(TentativelyClaimedIndices);
+		
 		// How much to fill?
 		// Update the amount left to fill		
 	}
@@ -85,6 +81,31 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 
 	
  	return Result; 
+}
+
+bool UInv_InventoryGrid::HasRoomAtIndex(const UInv_GridSlot* GridSlot,
+		const FIntPoint& Dimensions,
+		const TSet<int32>& CheckedIndices,
+		TSet<int32>& OutTentativelyClaimedIndices)
+{
+	// Is there room at this index? (i.e. is there other items in the way?)
+	// If we have room at index, loop through GridSlot indices by dimensions and columns, 
+	bool bHasRoomAtIndex = true;
+
+	UInv_InventoryStatics::ForEach2D(GridSlots,GridSlot->GetTileIndex(), Dimensions, Columns, [&](const UInv_GridSlot* SubGridSlot)
+	{
+		// If the slot is free, we can add to TentativelyClaimedIndices. If not, return false. 
+		if (CheckSlotConstraints(SubGridSlot, CheckedIndices, OutTentativelyClaimedIndices))
+		{
+			OutTentativelyClaimedIndices.Add(SubGridSlot->GetTileIndex());
+		}
+		else
+		{
+			bHasRoomAtIndex = false;
+		}
+	});
+	
+	return bHasRoomAtIndex; 
 }
 
 void UInv_InventoryGrid::AddItem(UInv_InventoryItem* Item)
@@ -207,22 +228,35 @@ void UInv_InventoryGrid::UpdateGridSlots(UInv_InventoryItem* NewItem, const int3
 	});
 }
 
+bool UInv_InventoryGrid::CheckSlotConstraints(const UInv_GridSlot* SubGridSlot,
+	const TSet<int32>& CheckedIndices,
+	TSet<int32>& OutTentativelyClaimedIndices) const
+{
+	// Index claimed? If there is no claim, return true. 
+	if (IsIndexClaimed(CheckedIndices, SubGridSlot->GetTileIndex())) return false;
+	
+	// Has valid item? If there is no item, add to TentativelyClaimedIndices 
+	if (!HasValidItem(SubGridSlot))
+	{
+		OutTentativelyClaimedIndices.Add(SubGridSlot->GetTileIndex());
+		return true;
+	}
+	
+	// Is this item the same type as the item we're trying to add?
+	// If so, is this a stackable item?
+	// If stackable, is this slot at the max stack size already?
+	
+	return false; 
+}
+
 bool UInv_InventoryGrid::IsIndexClaimed(const TSet<int32>& CheckedIndices, const int32 Index) const
 {
 	return CheckedIndices.Contains(Index);
 }
 
-bool UInv_InventoryGrid::HasRoomAtIndex(const UInv_GridSlot* GridSlot, const FIntPoint& Dimensions)
+bool UInv_InventoryGrid::HasValidItem(const UInv_GridSlot* GridSlot) const 
 {
-	// If we have room at index, loop through GridSlot indices by dimensions and columns, 
-	bool bHasRoomAtIndex = true;
-
-	UInv_InventoryStatics::ForEach2D(GridSlots,GridSlot->GetTileIndex(), Dimensions, Columns, []()
-	{
-		
-	});
-	
-	return bHasRoomAtIndex; 
+	return GridSlot->GetInventoryItem().IsValid();
 }
 
 FIntPoint UInv_InventoryGrid::GetItemDimensions(const FInv_ItemManifest& Manifest) const
