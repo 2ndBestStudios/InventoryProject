@@ -80,16 +80,24 @@ private:
 	bool HasRoomAtIndex(const UInv_GridSlot* GridSlot,
 						const FIntPoint& Dimensions,
 						const TSet<int32>& CheckedIndices,
-						TSet<int32>& OutTentativelyClaimedIndices);
+						TSet<int32>& OutTentativelyClaimedIndices,
+						const FGameplayTag& ItemType);
 
 	// Checks SlotConstraints 
-	bool CheckSlotConstraints (const UInv_GridSlot* GridSLot, const UInv_GridSlot* SubGridSlot, const TSet<int32>& CheckedIndices,TSet<int32>& OutTentativelyClaimedIndices) const;
+	bool CheckSlotConstraints (const UInv_GridSlot* GridSLot,
+								const UInv_GridSlot* SubGridSlot,
+								const TSet<int32>& CheckedIndices,
+								TSet<int32>& OutTentativelyClaimedIndices,
+								const FGameplayTag& ItemType) const;
 
 	// Checks GridSlot for InventoryItem 
 	bool HasValidItem(const UInv_GridSlot* GridSlot) const;
 
 	// Checks if GridSlot & SubGridSlot match 
 	bool IsUpperLeftSlot(const UInv_GridSlot* GridSlot, const UInv_GridSlot* SubGridSlot) const;
+
+	// Checks if new item matches existing item 
+	bool DoesItemTypeMatch(const UInv_InventoryItem* SubItem, const FGameplayTag& ItemType) const; 
 
 	// Checks item manifest for item dimensions 
 	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
