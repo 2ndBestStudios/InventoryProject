@@ -69,7 +69,10 @@ private:
 	void AddSlottedItemToCanvas(const int32 Index, const FInv_GridFragment* GridFragment, UInv_SlottedItem* SlottedItem) const;
 
 	// Updates the properties of a GridSlot 
-	void UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index, bool bStackableItem, const int32 StackAmount); 
+	void UpdateGridSlots(UInv_InventoryItem* NewItem, const int32 Index, bool bStackableItem, const int32 StackAmount);
+
+	// Checks if a current index is already filled 
+	bool IsIndexClaimed(const TSet<int32>& CheckedIndices, const int32 Index) const;
 	
 	// Gives a reference for the InventoryComponent 
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
