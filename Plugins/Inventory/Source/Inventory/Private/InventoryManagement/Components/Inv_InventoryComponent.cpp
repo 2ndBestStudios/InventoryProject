@@ -3,8 +3,10 @@
 
 #include "InventoryManagement/Components/Inv_InventoryComponent.h"
 
+#include "Items/Components/Inv_ItemComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
+#include "Items/Inv_InventoryItem.h"
 
 UInv_InventoryComponent::UInv_InventoryComponent() : InventoryList(this)
 {
@@ -57,7 +59,11 @@ void UInv_InventoryComponent::TryAddItem(UInv_ItemComponent* ItemComponent)
 {
 	// Calls HasRoomForItem function on SpatialInventory which overrides the Parent function
 	// Client first checks if there's even room in inventory before replicating any changes 
-	FInv_SlotAvailabilityResult Result = InventoryMenu->HasRoomForItem(ItemComponent); 
+	FInv_SlotAvailabilityResult Result = InventoryMenu->HasRoomForItem(ItemComponent);
+
+	// Sets InventoryItem on SlotAvailability result by checking the Array and passing in the ItemComponents GameplayTag
+	UInv_InventoryItem* FoundItem = InventoryList.FindFirstItemByType(ItemComponent->GetItemManifest().GetItemType());
+	Result.Item = FoundItem;
 
 	// Checks if inventory is full 
 	if (Result.TotalRoomToFill == 0)

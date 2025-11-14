@@ -99,3 +99,14 @@ void FInv_InventoryFastArray::RemoveEntry(UInv_InventoryItem* Item)
 		}
 	}
 }
+
+UInv_InventoryItem* FInv_InventoryFastArray::FindFirstItemByType(const FGameplayTag& ItemType)
+{
+	// Input parameters for lambda are part of the callables signature for FindByPredicate
+	// The capture gets anything outside the Lambdas scope 
+	auto* FoundItem = Entries.FindByPredicate([Type = ItemType](const FInv_InventoryEntry& Entry)
+	{
+		return IsValid(Entry.Item) && Entry.Item->GetItemManifest().GetItemType().MatchesTagExact(Type);
+	});
+	return FoundItem ? FoundItem->Item : nullptr;
+}
