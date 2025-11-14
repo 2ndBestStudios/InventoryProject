@@ -101,7 +101,14 @@ private:
 	// Checks if new item matches existing item 
 	bool DoesItemTypeMatch(const UInv_InventoryItem* SubItem, const FGameplayTag& ItemType) const;
 
-	bool IsInGridBounds(const int32 StartIndex, const FIntPoint& ItemDimensions) const; 
+	// Check if item is in GridBounds 
+	bool IsInGridBounds(const int32 StartIndex, const FIntPoint& ItemDimensions) const;
+
+	// Determine how much space is in a given GridSlot 
+	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
+
+	// Retrieve the StackAmount from a GridSlot 
+	int32 GetStackAmount(const UInv_GridSlot* GridSlot) const;
 
 	// Checks item manifest for item dimensions 
 	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
