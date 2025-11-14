@@ -76,7 +76,7 @@ private:
 	// Checks if a current index is already filled 
 	bool IsIndexClaimed(const TSet<int32>& CheckedIndices, const int32 Index) const;
 
-	// Checks if there is room at index 
+	// Backbone of Entire Project : Checks if there is room at index 
 	bool HasRoomAtIndex(const UInv_GridSlot* GridSlot,
 						const FIntPoint& Dimensions,
 						const TSet<int32>& CheckedIndices,

@@ -72,19 +72,33 @@ FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const FInv_ItemMa
 		{
 			continue;
 		}
-
-		CheckedIndices.Append(TentativelyClaimedIndices);
 		
 		// How much to fill?
 		const int32 AmountToFillInSlot = DetermineFillAmountForSlot(Result.bStackable, MaxStackSize, AmountToFill, GridSlot);
 		if (AmountToFillInSlot == 0) continue;
+
+		CheckedIndices.Append(TentativelyClaimedIndices);
 		
-		// Update the amount left to fill		
+		// Update the amount left to fill
+		Result.TotalRoomToFill += AmountToFillInSlot;
+		// Creates a new SlotAvailability, using conditional operators to set the constructor variables 
+		Result.SlotAvailabilities.Emplace(
+			FInv_SlotAvailability{
+				HasValidItem(GridSlot) ? GridSlot->GetUpperLeftIndex() : GridSlot->GetTileIndex(),
+				Result.bStackable ? AmountToFillInSlot : 0,
+				HasValidItem(GridSlot)
+			}
+		);
+		// Keep a running total of how much room is left to fill 
+		AmountToFill -= AmountToFillInSlot;
+
+		// How much is the remainder? 
+		Result.Remainder = AmountToFill;
+
+		// Early return prevents checking the rest of the inventory when its not needed 
+		if (AmountToFill == 0) return Result; 
 	}
 	
-
-	// How much is the remainder? 
-
 	
  	return Result; 
 }
