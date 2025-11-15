@@ -335,7 +335,28 @@ int32 UInv_InventoryGrid::GetStackAmount(const UInv_GridSlot* GridSlot) const
 
 void UInv_InventoryGrid::AddStacks(const FInv_SlotAvailabilityResult& Result)
 {
-	
+	// Checks if SlotAvailabilityResult Item matches Category 
+	if (!MatchesCategory(Result.Item.Get())) return;
+
+	// Loop through all SlotAvailabilities within the SlotAvailabilityResult
+	for (const auto& Availablility : Result.SlotAvailabilities)
+	{
+		// If there is an item at one of the SlotAvailabilities
+		if (Availablility.bItemAtIndex)
+		{
+			// Update the SlottedItem StackCount and Update the GridSlot StackCount 
+			const auto& GridSlot = GridSlots[Availablility.Index];
+			const auto& SlottedItem = SlottedItems.FindChecked(Availablility.Index);
+			SlottedItem->UpdateStackCount(GridSlot->GetStackCount() + Availablility.AmountToFill);
+			GridSlot->SetStackCount(GridSlot->GetStackCount() + Availablility.AmountToFill);
+		}
+		else
+		{
+			// Create a new SlottedItem and then update the GridSlot 
+			AddItemAtIndex(Result.Item.Get(), Availablility.Index, Result.bStackable, Availablility.AmountToFill);
+			UpdateGridSlots(Result.Item.Get(), Availablility.Index, Result.bStackable, Availablility.AmountToFill);
+		}
+	}
 }
 
 FIntPoint UInv_InventoryGrid::GetItemDimensions(const FInv_ItemManifest& Manifest) const
