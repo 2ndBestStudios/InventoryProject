@@ -5,7 +5,7 @@
 
 #include "Inv_FastArray.generated.h"
 
-class FGameplayTag;
+struct FGameplayTag;
 class UInv_InventoryComponent;
 class UInv_InventoryItem;
 class UInv_ItemComponent;

@@ -92,6 +92,8 @@ void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponen
 	// This is then replicated 
 	UInv_InventoryItem* NewItem = InventoryList.AddEntry(ItemComponent);
 
+	NewItem->SetTotalStackCount(StackCount);
+
 	// Handles broadcasting the delegate for listen and standalone
 	// Needed because for these modes the player is the host, not the client 
 	if (GetOwner()->GetNetMode() == NM_ListenServer || GetOwner()->GetNetMode() == NM_Standalone)
@@ -107,7 +109,16 @@ void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponen
 void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemComponent* ItemComponent, int32 StackCount,
 	int32 Remainder)
 {
-	
+	// Retrieves GameplayTag of ItemComponent by checking manifest. Then checks InventoryList array for matching item
+	const FGameplayTag& ItemType = IsValid(ItemComponent) ? ItemComponent->GetItemManifest().GetItemType() : FGameplayTag::EmptyTag;
+	UInv_InventoryItem* Item = InventoryList.FindFirstItemByType(ItemType);
+	if (!IsValid(Item)) return;
+
+	// Sets TotalStackCount of item by checking what it's total is and adding it to the passed in StackCount 
+	Item->SetTotalStackCount(Item->GetTotalStackCount() + StackCount);
+
+	// TODO: Destroy the item if the Remainder is zero
+	// Otherwise update the stack count for the item pickup 
 }
 
 void UInv_InventoryComponent::ConstructInventory()
