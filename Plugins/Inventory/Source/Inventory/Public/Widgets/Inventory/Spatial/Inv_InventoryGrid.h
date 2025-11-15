@@ -110,6 +110,10 @@ private:
 	// Retrieve the StackAmount from a GridSlot 
 	int32 GetStackAmount(const UInv_GridSlot* GridSlot) const;
 
+	// Function that responds to on StackChange delegate 
+	UFUNCTION()
+	void AddStacks(const FInv_SlotAvailabilityResult& Result); 
+
 	// Checks item manifest for item dimensions 
 	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
 	
