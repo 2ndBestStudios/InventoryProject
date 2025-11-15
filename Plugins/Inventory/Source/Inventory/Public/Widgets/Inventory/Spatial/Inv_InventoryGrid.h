@@ -10,6 +10,7 @@
 #include "Widgets/Inventory/SlottedItems/Inv_SlottedItem.h"
 #include "Inv_InventoryGrid.generated.h"
 
+class UInv_HoverItem;
 struct FInv_ImageFragment;
 struct FInv_GridFragment;
 class UInv_SlottedItem;
@@ -104,6 +105,12 @@ private:
 	// Check if item is in GridBounds 
 	bool IsInGridBounds(const int32 StartIndex, const FIntPoint& ItemDimensions) const;
 
+	// Checks for right click 
+	bool IsRightClicked(const FPointerEvent& MouseEvent) const;
+
+	// Checks for left click 
+	bool IsLeftClicked(const FPointerEvent& MouseEvent) const;
+
 	// Determine how much space is in a given GridSlot 
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
 
@@ -155,5 +162,14 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	float TileSize;
+
+
+	// Contains HoverItemClass
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UInv_HoverItem> HoverItemClass;
+
+	// Reference to HoverItem
+	UPROPERTY()
+	TObjectPtr<UInv_HoverItem> HoverItem; 
 	
 };

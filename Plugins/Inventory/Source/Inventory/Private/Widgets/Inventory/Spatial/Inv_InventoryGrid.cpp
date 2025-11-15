@@ -15,6 +15,7 @@
 #include "Widgets/Inventory/GridSlots/Inv_GridSlot.h"
 #include "Widgets/Utils/Inv_WidgetUtils.h"
 #include "Items/Manifest/Inv_ItemManifest.h"
+#include "Widgets/Inventory/HoverItem/Inv_HoverItem.h"
 #include "Widgets/Inventory/SlottedItems/Inv_SlottedItem.h"
 
 void UInv_InventoryGrid::NativeOnInitialized()
@@ -315,8 +316,18 @@ bool UInv_InventoryGrid::IsInGridBounds(const int32 StartIndex, const FIntPoint&
 	return EndColumn <= Columns && EndRow <= Rows;
 }
 
+bool UInv_InventoryGrid::IsRightClicked(const FPointerEvent& MouseEvent) const
+{
+	return MouseEvent.GetEffectingButton() == EKeys::RightMouseButton; 
+}
+
+bool UInv_InventoryGrid::IsLeftClicked(const FPointerEvent& MouseEvent) const
+{
+	return MouseEvent.GetEffectingButton() == EKeys::LeftMouseButton;
+}
+
 int32 UInv_InventoryGrid::DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize,
-	const int32 AmountToFill, const UInv_GridSlot* GridSlot) const 
+                                                     const int32 AmountToFill, const UInv_GridSlot* GridSlot) const 
 {
 	// Get RoomInSlot by subtracting MaxStackSize from any StackAmount
 	// Then if the item is Stackable, return the min of AmountToFill and RoomInSlot 
@@ -364,7 +375,13 @@ void UInv_InventoryGrid::AddStacks(const FInv_SlotAvailabilityResult& Result)
 
 void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEvent& MouseEvent)
 {
-	
+	check(GridSlots.IsValidIndex(GridIndex));
+	UInv_InventoryItem* ClickedInventoryItem = GridSlots[GridIndex]->GetInventoryItem().Get();
+
+	if (!IsValid(HoverItem) && IsLeftClicked(MouseEvent))
+	{
+		// Pickup - Assign the hover item, and remove the slotted item from the grid 
+	}
 }
 
 FIntPoint UInv_InventoryGrid::GetItemDimensions(const FInv_ItemManifest& Manifest) const
