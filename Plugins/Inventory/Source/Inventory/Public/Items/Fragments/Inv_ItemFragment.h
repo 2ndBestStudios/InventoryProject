@@ -76,9 +76,10 @@ USTRUCT(BlueprintType)
 struct FInv_StackableFragment : public FInv_ItemFragment
 {
 	GENERATED_BODY()
-	// Getter functions 
+	// Getter & Setter functions 
 	int32 GetMaxStackSize() const { return MaxStackSize; }
 	int32 GetStackCount() const { return StackCount; }
+	void SetStackCount(int32 Count) { StackCount = Count; }
 
 private:
 	// MaxStackSize for item

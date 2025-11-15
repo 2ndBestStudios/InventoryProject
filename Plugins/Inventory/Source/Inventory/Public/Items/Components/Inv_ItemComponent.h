@@ -24,6 +24,16 @@ public:
 
 	// Returns ItemManifest 
 	FInv_ItemManifest GetItemManifest() const {return ItemManifest;}
+
+	// Called when an item is picked up 
+	void PickedUp();
+
+protected:
+
+	// BP Event. Can be used to spawn custom effects 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Inventory")
+	void OnPickedUp();
+	
 private:
 
 	// Has reference to item manifest 

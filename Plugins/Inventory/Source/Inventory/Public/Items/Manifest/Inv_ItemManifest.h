@@ -18,16 +18,24 @@ struct INVENTORY_API FInv_ItemManifest
 
 	// Creates a NewObject
 	UInv_InventoryItem* Manifest(UObject* NewOuter);
+	
 	// Returns ItemCategory 
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
+	
 	// Returns GameplayTag
 	FGameplayTag GetItemType() const { return ItemType; }
+	
 	// Template to get fragments by comparing with tags
 	template<typename T> requires std::derived_from<T, FInv_ItemFragment>
 	const T* GetFragmentOfTypeWithTag(const FGameplayTag& FragmentTag) const;
+	
 	// Simpler template to get fragment 
 	template<typename T> requires std::derived_from<T, FInv_ItemFragment>
 	const T* GetFragmentOfType() const;
+
+	// Mutable template to get fragment
+	template<typename T> requires std::derived_from<T, FInv_ItemFragment>
+	T* GetFragmentOfTypeMutable();
 	
 private:
 
@@ -71,6 +79,23 @@ const T* FInv_ItemManifest::GetFragmentOfType() const
 	{
 		// Returns the pointer for each fragment of the type fragment type searching for 
 		if (const T* FragmentPtr = Fragment.GetPtr<T>())
+		{
+			// Checks each fragment pointer and calls GetFragmentTag on ItemFragment, which then calls helper function for tags 
+			return FragmentPtr;
+		}
+	}
+	
+	return nullptr;
+}
+
+template <typename T> requires std::derived_from<T, FInv_ItemFragment>
+T* FInv_ItemManifest::GetFragmentOfTypeMutable()
+{
+	// Loops through entire Instanced Struct Array of Fragments 
+	for (TInstancedStruct<FInv_ItemFragment>& Fragment : Fragments)
+	{
+		// Returns the pointer for each fragment of the type fragment type searching for 
+		if (T* FragmentPtr = Fragment.GetMutablePtr<T>())
 		{
 			// Checks each fragment pointer and calls GetFragmentTag on ItemFragment, which then calls helper function for tags 
 			return FragmentPtr;

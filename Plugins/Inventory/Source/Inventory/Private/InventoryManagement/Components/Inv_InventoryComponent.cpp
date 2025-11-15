@@ -7,6 +7,7 @@
 #include "Net/UnrealNetwork.h"
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 #include "Items/Inv_InventoryItem.h"
+#include "Items/Fragments/Inv_ItemFragment.h"
 
 UInv_InventoryComponent::UInv_InventoryComponent() : InventoryList(this)
 {
@@ -102,7 +103,7 @@ void UInv_InventoryComponent::Server_AddNewItem_Implementation(UInv_ItemComponen
 		OnItemAdded.Broadcast(NewItem);
 	}
 	
-	// Tell item component to destroy its owning actor
+	ItemComponent->PickedUp();
 }
 
 
@@ -117,8 +118,16 @@ void UInv_InventoryComponent::Server_AddStacksToItem_Implementation(UInv_ItemCom
 	// Sets TotalStackCount of item by checking what it's total is and adding it to the passed in StackCount 
 	Item->SetTotalStackCount(Item->GetTotalStackCount() + StackCount);
 
-	// TODO: Destroy the item if the Remainder is zero
-	// Otherwise update the stack count for the item pickup 
+	// If there is no more remainder, the item is picked up and the owner is destroyed 
+	if (Remainder == 0)
+	{
+		ItemComponent->PickedUp();
+	}
+	// If there is still a remainder, we will get the ItemComponent's stackable fragment and set the Item's StackCount to the remainder 
+	else if (FInv_StackableFragment* StackableFragment = ItemComponent->GetItemManifest().GetFragmentOfTypeMutable<FInv_StackableFragment>())
+	{
+		StackableFragment->SetStackCount(Remainder);
+	}
 }
 
 void UInv_InventoryComponent::ConstructInventory()
