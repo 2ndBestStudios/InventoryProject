@@ -111,6 +111,10 @@ private:
 	// Checks for left click 
 	bool IsLeftClicked(const FPointerEvent& MouseEvent) const;
 
+	void PickUp(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex);
+
+	void AssignHoverItem(UInv_InventoryItem* InventoryItem); 
+
 	// Determine how much space is in a given GridSlot 
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
 

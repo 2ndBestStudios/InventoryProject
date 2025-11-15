@@ -326,6 +326,46 @@ bool UInv_InventoryGrid::IsLeftClicked(const FPointerEvent& MouseEvent) const
 	return MouseEvent.GetEffectingButton() == EKeys::LeftMouseButton;
 }
 
+void UInv_InventoryGrid::PickUp(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex)
+{
+	// Assign the HoverItem
+	AssignHoverItem(ClickedInventoryItem);
+	
+	// Remove the clicked item from the grid 
+}
+
+void UInv_InventoryGrid::AssignHoverItem(UInv_InventoryItem* InventoryItem)
+{
+	// Creates HoverItem widget
+	if (!IsValid(HoverItem))
+	{
+		HoverItem = CreateWidget<UInv_HoverItem>(GetOwningPlayer(), HoverItemClass);
+	}
+
+	// Returns GridFragment and ImageFragment from InventoryItem
+	const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(InventoryItem, FragmentTags::GridFragment);
+	const FInv_ImageFragment* ImageFragment = GetFragment<FInv_ImageFragment>(InventoryItem, FragmentTags::IconFragment);
+	if (!GridFragment || !ImageFragment) return;
+
+	// Gets Item Size from GridFragment 
+	const FVector2D DrawSize = GetDrawSize(GridFragment);
+
+	// Sets IconBrush from ImageFragment 
+	FSlateBrush IconBrush;
+	IconBrush.SetResourceObject(ImageFragment->GetIcon());
+	IconBrush.DrawAs = ESlateBrushDrawType::Image;
+	IconBrush.ImageSize = DrawSize * UWidgetLayoutLibrary::GetViewportScale(this);
+
+	// Sets the variables of the HoverItem variable 
+	HoverItem->SetImageBrush(IconBrush);
+	HoverItem->SetGridDimensions(GridFragment->GetGridSize());
+	HoverItem->SetInventoryItem(InventoryItem);
+	HoverItem->SetIsStackable(InventoryItem->IsStackable());
+
+	// Changes the MouseCursor to the Widget when creating it 
+	GetOwningPlayer()->SetMouseCursorWidget(EMouseCursor::Default, HoverItem); 
+}
+
 int32 UInv_InventoryGrid::DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize,
                                                      const int32 AmountToFill, const UInv_GridSlot* GridSlot) const 
 {
@@ -380,7 +420,8 @@ void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEve
 
 	if (!IsValid(HoverItem) && IsLeftClicked(MouseEvent))
 	{
-		// Pickup - Assign the hover item, and remove the slotted item from the grid 
+		// Pickup - Assign the hover item, and remove the slotted item from the grid
+		PickUp(ClickedInventoryItem, GridIndex);
 	}
 }
 
