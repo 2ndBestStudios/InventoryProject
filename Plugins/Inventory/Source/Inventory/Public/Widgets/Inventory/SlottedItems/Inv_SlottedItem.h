@@ -9,6 +9,9 @@
 class UInv_InventoryItem;
 class UImage;
 class UTextBlock;
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FSlottedItemClicked, int32, GridIndex, const FPointerEvent&, MouseEvent);
+
 /**
  * 
  */
@@ -18,7 +21,12 @@ class INVENTORY_API UInv_SlottedItem : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	// Override function for capturing MouseButton clicks 
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 
+	// Delegate 
+	FSlottedItemClicked OnSlottedItemClicked; 
+	
 	// Getter and setter functions for variables 
 	bool IsStackable() const { return bIsStackable; }
 	void SetIsStackable(bool bStackable) { bIsStackable = bStackable; }

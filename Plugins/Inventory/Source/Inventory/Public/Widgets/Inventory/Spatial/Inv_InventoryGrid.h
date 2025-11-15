@@ -112,7 +112,11 @@ private:
 
 	// Function that responds to on StackChange delegate 
 	UFUNCTION()
-	void AddStacks(const FInv_SlotAvailabilityResult& Result); 
+	void AddStacks(const FInv_SlotAvailabilityResult& Result);
+
+	// Function that responds to the SlottedItemClicked delegate 
+	UFUNCTION()
+	void OnSlottedItemClicked(int32 GridIndex, const FPointerEvent& MouseEvent); 
 
 	// Checks item manifest for item dimensions 
 	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
