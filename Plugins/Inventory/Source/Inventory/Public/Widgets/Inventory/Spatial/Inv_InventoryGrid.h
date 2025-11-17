@@ -129,8 +129,10 @@ private:
 	void UpdateTileParameters (const FVector2D& CanvasPosition, const FVector2D& MousePosition);
 
 	// Returns coordinates of mouse position to canvas position 
-	FIntPoint CalculateHoveredCoordinates(const FVector2D& CanvasPosition, const FVector2D& MousePosition);
+	FIntPoint CalculateHoveredCoordinates(const FVector2D& CanvasPosition, const FVector2D& MousePosition) const;
 
+	EInv_TileQuadrant CalculateTileQuadrant(const FVector2D CanvasPosition, const FVector2D MousePosition) const;
+	
 	// Determine how much space is in a given GridSlot 
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
 
