@@ -57,8 +57,8 @@ void UInv_InventoryGrid::UpdateTileParameters(const FVector2D& CanvasPosition, c
 	TileParameters.TileIndex = UInv_WidgetUtils::GetIndexFromPosition(HoveredTileCoordinates, Columns);
 	TileParameters.TileQuadrant = CalculateTileQuadrant(CanvasPosition, MousePosition);
 	
-	// handle highlight/unhighlight of GridSlots
-
+	// Handle highlight/unhighlight of GridSlots
+	OnTileParametersUpdated(TileParameters); 
 	
 }
 
@@ -91,6 +91,18 @@ EInv_TileQuadrant UInv_InventoryGrid::CalculateTileQuadrant(const FVector2D Canv
 
 	return HoveredTileQuadrant;
 	
+}
+
+void UInv_InventoryGrid::OnTileParametersUpdated(const FInv_TileParameters& Parameters)
+{
+	if (!IsValid(HoverItem)) return;
+
+	// Get Hover Item's dimensions
+	// Calculate the starting coordinate for highlighting
+	// Check hover position
+		// Is it in the grid bounds?
+		// Any items in the way?
+		// If so, is there only one item in the way? (can we stop?) 
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_ItemComponent* ItemComponent)
