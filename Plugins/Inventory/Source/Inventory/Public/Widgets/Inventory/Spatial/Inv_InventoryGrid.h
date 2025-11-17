@@ -135,7 +135,9 @@ private:
 
 	void OnTileParametersUpdated(const FInv_TileParameters& Parameters);
 
-	FIntPoint CalculateStartingCoordinate(const FIntPoint& Coordinate, const FIntPoint& Dimensions, const EInv_TileQuadrant Quadrant) const; 
+	FIntPoint CalculateStartingCoordinate(const FIntPoint& Coordinate, const FIntPoint& Dimensions, const EInv_TileQuadrant Quadrant) const;
+
+	FInv_SpaceQueryResult CheckHoverPosition(const FIntPoint& Position, const FIntPoint& Dimensions) const; 
 	
 	// Determine how much space is in a given GridSlot 
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
@@ -200,4 +202,10 @@ private:
 	// TileParameters 
 	FInv_TileParameters TileParameters;
 	FInv_TileParameters LastTileParameters;
+
+	// Index where an item would be placed if we click on the grid at a valid location 
+	int32 ItemDropIndex{INDEX_NONE};
+
+	// Checks if there is an item in space 
+	FInv_SpaceQueryResult CurrentSpaceQueryResult;
 };

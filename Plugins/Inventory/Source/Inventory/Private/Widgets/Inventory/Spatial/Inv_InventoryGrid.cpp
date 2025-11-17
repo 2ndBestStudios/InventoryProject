@@ -102,11 +102,11 @@ void UInv_InventoryGrid::OnTileParametersUpdated(const FInv_TileParameters& Para
 	const FIntPoint Dimensions = HoverItem->GetGridDimensions(); 
 	
 	// Calculate the starting coordinate for highlighting
-	const FIntPoint StartingCoordinate = CalculateStartingCoordinate(Parameters.TileCoordinates, Dimensions, Parameters.TileQuadrant); 
-	// Check hover position
-		// Is it in the grid bounds?
-		// Any items in the way?
-		// If so, is there only one item in the way? (can we stop?) 
+	const FIntPoint StartingCoordinate = CalculateStartingCoordinate(Parameters.TileCoordinates, Dimensions, Parameters.TileQuadrant);
+
+	ItemDropIndex = UInv_WidgetUtils::GetIndexFromPosition(StartingCoordinate, Columns); 
+
+	CurrentSpaceQueryResult = CheckHoverPosition(StartingCoordinate, Dimensions); 
 }
 
 FIntPoint UInv_InventoryGrid::CalculateStartingCoordinate(const FIntPoint& Coordinate, const FIntPoint& Dimensions,
@@ -140,6 +140,18 @@ FIntPoint UInv_InventoryGrid::CalculateStartingCoordinate(const FIntPoint& Coord
 			return FIntPoint(-1,-1); 
 	}
 	return StartingCoordinate;
+}
+
+FInv_SpaceQueryResult UInv_InventoryGrid::CheckHoverPosition(const FIntPoint& Position,
+	const FIntPoint& Dimensions) const
+{
+	FInv_SpaceQueryResult Result;
+	
+	// Is it in the grid bounds?
+	// Any items in the way?
+	// If so, is there only one item in the way? (can we stop?)
+
+	return Result;
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_ItemComponent* ItemComponent)
