@@ -139,7 +139,10 @@ private:
 
 	FInv_SpaceQueryResult CheckHoverPosition(const FIntPoint& Position, const FIntPoint& Dimensions);
 
-	bool CursorExitedCanvas(const FVector2D& CanvasPosition, const FVector2D& BoundarySize, const FVector2D& Location); 
+	bool CursorExitedCanvas(const FVector2D& CanvasPosition, const FVector2D& BoundarySize, const FVector2D& Location);
+
+	void HighlightSlots(const int32 Index, const FIntPoint& Dimensions);
+	void UnHighlightSlots(const int32 Index, const FIntPoint& Dimensions);
 	
 	// Determine how much space is in a given GridSlot 
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
@@ -213,4 +216,7 @@ private:
 
 	bool bMouseWithinCanvas;
 	bool bLastMouseWithinCanvas;
+
+	int32 LastHighlightedIndex;
+	FIntPoint LastHighlightedDimensions;
 };

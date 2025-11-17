@@ -42,14 +42,20 @@ void UInv_InventoryGrid::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
 	// Get mouse position in viewport 
 	const FVector2D MousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetOwningPlayer());
 
+	if (CursorExitedCanvas(CanvasPosition, UInv_WidgetUtils::GetWidgetSize(CanvasPanel), MousePosition))
+	{
+		return;
+	}
+
 	UpdateTileParameters(CanvasPosition, MousePosition);
 }
 
 void UInv_InventoryGrid::UpdateTileParameters(const FVector2D& CanvasPosition, const FVector2D& MousePosition)
 {
-	// If mouse not in canvas panel, return 
-	// Calculate tile quadrant, tile index, and coordinates
+	// If mouse not in canvas panel, return
+	if (!bMouseWithinCanvas) return; 
 	
+	// Calculate tile quadrant, tile index, and coordinates
 	const FIntPoint HoveredTileCoordinates = CalculateHoveredCoordinates(CanvasPosition, MousePosition);
 
 	// Fill out TileParameters 
@@ -57,11 +63,6 @@ void UInv_InventoryGrid::UpdateTileParameters(const FVector2D& CanvasPosition, c
 	TileParameters.TileCoordinates = HoveredTileCoordinates;
 	TileParameters.TileIndex = UInv_WidgetUtils::GetIndexFromPosition(HoveredTileCoordinates, Columns);
 	TileParameters.TileQuadrant = CalculateTileQuadrant(CanvasPosition, MousePosition);
-
-	if (CursorExitedCanvas(CanvasPosition, UInv_WidgetUtils::GetWidgetSize(CanvasPanel), MousePosition))
-	{
-		return;
-	}
 	
 	// Handle highlight/unhighlight of GridSlots
 	OnTileParametersUpdated(TileParameters); 
@@ -73,8 +74,8 @@ FIntPoint UInv_InventoryGrid::CalculateHoveredCoordinates(const FVector2D& Canva
 {
 	// Floor to Int is 64 bit int. Static Cast converts to 32
 	return FIntPoint{
-		static_cast<int32>(FMath::FloorToInt(MousePosition.X - CanvasPosition.X)/ TileSize),
-		static_cast<int32>(FMath::FloorToInt(MousePosition.Y - CanvasPosition.Y)/ TileSize)
+		static_cast<int32>(FMath::FloorToInt((MousePosition.X - CanvasPosition.X)/ TileSize)),
+		static_cast<int32>(FMath::FloorToInt((MousePosition.Y - CanvasPosition.Y)/ TileSize))
 	};
 }
 
@@ -111,7 +112,19 @@ void UInv_InventoryGrid::OnTileParametersUpdated(const FInv_TileParameters& Para
 
 	ItemDropIndex = UInv_WidgetUtils::GetIndexFromPosition(StartingCoordinate, Columns); 
 
-	CurrentSpaceQueryResult = CheckHoverPosition(StartingCoordinate, Dimensions); 
+	CurrentSpaceQueryResult = CheckHoverPosition(StartingCoordinate, Dimensions);
+
+	if (CurrentSpaceQueryResult.bHasSpace)
+	{
+		HighlightSlots(ItemDropIndex, Dimensions);
+		return;
+	}
+	UnHighlightSlots(LastHighlightedIndex, LastHighlightedDimensions);
+
+	if (CurrentSpaceQueryResult.ValidItem.IsValid())
+	{
+		// TODO: There's a single item in this space. We can swap or add stack 
+	}
 }
 
 FIntPoint UInv_InventoryGrid::CalculateStartingCoordinate(const FIntPoint& Coordinate, const FIntPoint& Dimensions,
@@ -129,15 +142,15 @@ FIntPoint UInv_InventoryGrid::CalculateStartingCoordinate(const FIntPoint& Coord
 			StartingCoordinate.Y = Coordinate.Y - FMath::FloorToInt(0.5f * Dimensions.Y);
 		break;
 		case EInv_TileQuadrant::TopRight:
-			StartingCoordinate.X = Coordinate.X + FMath::FloorToInt(0.5f * Dimensions.X) + HasEvenWidth;
+			StartingCoordinate.X = Coordinate.X - FMath::FloorToInt(0.5f * Dimensions.X) + HasEvenWidth;
 			StartingCoordinate.Y = Coordinate.Y - FMath::FloorToInt(0.5f * Dimensions.Y);
 		break;
 		case EInv_TileQuadrant::BottomLeft:
-			StartingCoordinate.X = Coordinate.X + FMath::FloorToInt(0.5f * Dimensions.X);
+			StartingCoordinate.X = Coordinate.X - FMath::FloorToInt(0.5f * Dimensions.X);
 			StartingCoordinate.Y = Coordinate.Y - FMath::FloorToInt(0.5f * Dimensions.Y) + HasEvenHeight;
 		break;
 		case EInv_TileQuadrant::BottomRight:
-			StartingCoordinate.X = Coordinate.X + FMath::FloorToInt(0.5f * Dimensions.X) + HasEvenWidth;
+			StartingCoordinate.X = Coordinate.X - FMath::FloorToInt(0.5f * Dimensions.X) + HasEvenWidth;
 			StartingCoordinate.Y = Coordinate.Y - FMath::FloorToInt(0.5f * Dimensions.Y) + HasEvenHeight;
 		break;
 		default:
@@ -188,10 +201,39 @@ bool UInv_InventoryGrid::CursorExitedCanvas(const FVector2D& CanvasPosition, con
 	bMouseWithinCanvas = UInv_WidgetUtils::IsWithinBounds(CanvasPosition, BoundarySize, Location);
 	if (!bMouseWithinCanvas && bLastMouseWithinCanvas)
 	{
-		//TODO:: Unhighlight slots
+		UnHighlightSlots(LastHighlightedIndex, LastHighlightedDimensions);
 		return true;
 	}
 	return false; 
+}
+
+void UInv_InventoryGrid::HighlightSlots(const int32 Index, const FIntPoint& Dimensions)
+{
+	if (!bMouseWithinCanvas) return;
+
+	UnHighlightSlots(LastHighlightedIndex, LastHighlightedDimensions); 
+	
+	UInv_InventoryStatics::ForEach2D(GridSlots, Index, Dimensions, Columns, [&](UInv_GridSlot* GridSlot)
+	{
+		GridSlot->SetOccupiedTexture(); 
+	});
+	LastHighlightedDimensions = Dimensions;
+	LastHighlightedIndex = Index;
+}
+
+void UInv_InventoryGrid::UnHighlightSlots(const int32 Index, const FIntPoint& Dimensions)
+{
+	UInv_InventoryStatics::ForEach2D(GridSlots, Index, Dimensions, Columns, [&](UInv_GridSlot* GridSlot)
+	{
+		if (GridSlot->IsAvailable())
+		{
+			GridSlot->SetUnoccupiedTexture();
+		}
+		else
+		{
+			GridSlot->SetOccupiedTexture();
+		}
+	});
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_ItemComponent* ItemComponent)
