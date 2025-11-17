@@ -126,7 +126,10 @@ private:
 	void RemoveItemFromGrid(UInv_InventoryItem* InventoryItem, const int32 GridIndex);
 
 	// Updates TileParameters 
-	void UpdateTileParameters (const FVector2D& CanvasPosition, const FVector2D& MousePosition); 
+	void UpdateTileParameters (const FVector2D& CanvasPosition, const FVector2D& MousePosition);
+
+	// Returns coordinates of mouse position to canvas position 
+	FIntPoint CalculateHoveredCoordinates(const FVector2D& CanvasPosition, const FVector2D& MousePosition);
 
 	// Determine how much space is in a given GridSlot 
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
