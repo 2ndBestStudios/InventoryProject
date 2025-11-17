@@ -182,6 +182,9 @@ private:
 
 	// Reference to HoverItem
 	UPROPERTY()
-	TObjectPtr<UInv_HoverItem> HoverItem; 
-	
+	TObjectPtr<UInv_HoverItem> HoverItem;
+
+	// TileParameters 
+	FInv_TileParameters TileParameters;
+	FInv_TileParameters LastTileParameters;
 };

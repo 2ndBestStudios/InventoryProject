@@ -361,7 +361,7 @@ void UInv_InventoryGrid::RemoveItemFromGrid(UInv_InventoryItem* InventoryItem, c
 		GridSlot->SetStackCount(0);
 	});
 
-	// Remove SlottedItem from array 
+	// Remove SlottedItem from array  
 	if (SlottedItems.Contains(GridIndex))
 	{
 		TObjectPtr<UInv_SlottedItem> FoundSlottedItem;
