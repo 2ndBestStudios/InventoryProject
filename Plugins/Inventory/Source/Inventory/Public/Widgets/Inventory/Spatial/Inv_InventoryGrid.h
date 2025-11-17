@@ -20,6 +20,7 @@ class UInv_InventoryItem;
 class UInv_InventoryComponent;
 class UCanvasPanel;
 class UInv_GridSlot;
+enum class EInv_GridSlotState : uint8;
 /**
  * 
  */
@@ -143,6 +144,8 @@ private:
 
 	void HighlightSlots(const int32 Index, const FIntPoint& Dimensions);
 	void UnHighlightSlots(const int32 Index, const FIntPoint& Dimensions);
+
+	void ChangeHoverType(const int32 Index, const FIntPoint& Dimensions, EInv_GridSlotState GridSlotState);
 	
 	// Determine how much space is in a given GridSlot 
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;

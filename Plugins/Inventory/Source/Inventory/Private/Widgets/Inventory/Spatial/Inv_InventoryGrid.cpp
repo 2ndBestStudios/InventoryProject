@@ -50,6 +50,20 @@ void UInv_InventoryGrid::NativeTick(const FGeometry& MyGeometry, float InDeltaTi
 	UpdateTileParameters(CanvasPosition, MousePosition);
 }
 
+bool UInv_InventoryGrid::CursorExitedCanvas(const FVector2D& CanvasPosition, const FVector2D& BoundarySize,
+	const FVector2D& Location)
+{
+	bLastMouseWithinCanvas = bMouseWithinCanvas;
+
+	bMouseWithinCanvas = UInv_WidgetUtils::IsWithinBounds(CanvasPosition, BoundarySize, Location);
+	if (!bMouseWithinCanvas && bLastMouseWithinCanvas)
+	{
+		UnHighlightSlots(LastHighlightedIndex, LastHighlightedDimensions);
+		return true;
+	}
+	return false; 
+}
+
 void UInv_InventoryGrid::UpdateTileParameters(const FVector2D& CanvasPosition, const FVector2D& MousePosition)
 {
 	// If mouse not in canvas panel, return
@@ -121,9 +135,12 @@ void UInv_InventoryGrid::OnTileParametersUpdated(const FInv_TileParameters& Para
 	}
 	UnHighlightSlots(LastHighlightedIndex, LastHighlightedDimensions);
 
-	if (CurrentSpaceQueryResult.ValidItem.IsValid())
+	if (CurrentSpaceQueryResult.ValidItem.IsValid() && GridSlots.IsValidIndex(CurrentSpaceQueryResult.UpperLeftIndex))
 	{
-		// TODO: There's a single item in this space. We can swap or add stack 
+		const FInv_GridFragment* GridFragment = GetFragment<FInv_GridFragment>(CurrentSpaceQueryResult.ValidItem.Get(), FragmentTags::GridFragment);
+		if (!GridFragment) return;
+
+		ChangeHoverType(CurrentSpaceQueryResult.UpperLeftIndex, GridFragment->GetGridSize(), EInv_GridSlotState::GrayedOut);
 	}
 }
 
@@ -193,20 +210,6 @@ FInv_SpaceQueryResult UInv_InventoryGrid::CheckHoverPosition(const FIntPoint& Po
 	return Result;
 }
 
-bool UInv_InventoryGrid::CursorExitedCanvas(const FVector2D& CanvasPosition, const FVector2D& BoundarySize,
-	const FVector2D& Location)
-{
-	bLastMouseWithinCanvas = bMouseWithinCanvas;
-
-	bMouseWithinCanvas = UInv_WidgetUtils::IsWithinBounds(CanvasPosition, BoundarySize, Location);
-	if (!bMouseWithinCanvas && bLastMouseWithinCanvas)
-	{
-		UnHighlightSlots(LastHighlightedIndex, LastHighlightedDimensions);
-		return true;
-	}
-	return false; 
-}
-
 void UInv_InventoryGrid::HighlightSlots(const int32 Index, const FIntPoint& Dimensions)
 {
 	if (!bMouseWithinCanvas) return;
@@ -234,6 +237,34 @@ void UInv_InventoryGrid::UnHighlightSlots(const int32 Index, const FIntPoint& Di
 			GridSlot->SetOccupiedTexture();
 		}
 	});
+}
+
+void UInv_InventoryGrid::ChangeHoverType(const int32 Index, const FIntPoint& Dimensions,
+	EInv_GridSlotState GridSlotState)
+{
+	UnHighlightSlots(LastHighlightedIndex, LastHighlightedDimensions);
+
+	UInv_InventoryStatics::ForEach2D(GridSlots, Index, Dimensions, Columns, [State = GridSlotState](UInv_GridSlot* GridSlot)
+	{
+		switch (State)
+		{
+		case EInv_GridSlotState::Occupied:
+			GridSlot->SetOccupiedTexture();
+			break;
+		case EInv_GridSlotState::Unoccupied:
+			GridSlot->SetUnoccupiedTexture();
+			break;
+		case EInv_GridSlotState::Selected:
+			GridSlot->SetSelectedTexture();
+			break;
+		case EInv_GridSlotState::GrayedOut:
+			GridSlot->SetGrayedOutTexture();
+			break;
+		}
+	});
+
+	LastHighlightedIndex = Index;
+	LastHighlightedDimensions = Dimensions;
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_ItemComponent* ItemComponent)
