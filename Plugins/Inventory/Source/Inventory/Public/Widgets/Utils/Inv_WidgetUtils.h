@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Inv_WidgetUtils.generated.h"
 
+class UWidget;
 /**
  * 
  */
@@ -15,6 +16,9 @@ class INVENTORY_API UInv_WidgetUtils : public UBlueprintFunctionLibrary
 	GENERATED_BODY()
 
 public:
+
+	UFUNCTION(BlueprintCallable, category = "Inventory")
+	static FVector2D GetWidgetPosition(UWidget* Widget); 
 
 	// Allows us to calculate index location based on passed in parameters. FIntPoint can take X & Y 
 	static int32 GetIndexFromPosition(const FIntPoint& Position, const int32 Columns);

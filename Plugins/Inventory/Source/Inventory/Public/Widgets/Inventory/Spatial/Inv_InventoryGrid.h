@@ -29,8 +29,10 @@ class INVENTORY_API UInv_InventoryGrid : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	// Setups inital values 
-	virtual void NativeOnInitialized() override; 
+	// Setups Initial values 
+	virtual void NativeOnInitialized() override;
+
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	
 	// Getter for item category 
 	EInv_ItemCategory GetItemCategory() const { return ItemCategory; }
@@ -123,6 +125,9 @@ private:
 	// Removes item from grid 
 	void RemoveItemFromGrid(UInv_InventoryItem* InventoryItem, const int32 GridIndex);
 
+	// Updates TileParameters 
+	void UpdateTileParameters (const FVector2D& CanvasPosition, const FVector2D& MousePosition); 
+
 	// Determine how much space is in a given GridSlot 
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
 
@@ -174,7 +179,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
 	float TileSize;
-
 
 	// Contains HoverItemClass
 	UPROPERTY(EditAnywhere, Category = "Inventory")

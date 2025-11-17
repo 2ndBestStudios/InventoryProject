@@ -30,6 +30,27 @@ void UInv_InventoryGrid::NativeOnInitialized()
 	InventoryComponent->OnStackChange.AddDynamic(this, &ThisClass::AddStacks); 
 }
 
+void UInv_InventoryGrid::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	// Get mouse position relative to where in the canvas panel it would be
+	// First get canvas position in viewport 
+	const FVector2D CanvasPosition = UInv_WidgetUtils::GetWidgetPosition(CanvasPanel);
+	
+	// Get mouse position in viewport 
+	const FVector2D MousePosition = UWidgetLayoutLibrary::GetMousePositionOnViewport(GetOwningPlayer());
+
+	UpdateTileParameters(CanvasPosition, MousePosition);
+}
+
+void UInv_InventoryGrid::UpdateTileParameters(const FVector2D& CanvasPosition, const FVector2D& MousePosition)
+{
+	// Calculate tile quadrant
+	// handle highlight/unhighlight of GridSlots 
+}
+
+
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_ItemComponent* ItemComponent)
 {
 	// Calls manifest version 
