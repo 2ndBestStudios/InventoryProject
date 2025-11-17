@@ -148,6 +148,8 @@ FInv_SpaceQueryResult UInv_InventoryGrid::CheckHoverPosition(const FIntPoint& Po
 	FInv_SpaceQueryResult Result;
 	
 	// Is it in the grid bounds?
+	if (!IsInGridBounds(UInv_WidgetUtils::GetIndexFromPosition(Position, Columns), Dimensions)) return Result; 
+	
 	// Any items in the way?
 	// If so, is there only one item in the way? (can we stop?)
 
