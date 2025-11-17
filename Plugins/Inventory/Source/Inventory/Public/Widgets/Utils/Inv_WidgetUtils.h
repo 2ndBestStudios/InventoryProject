@@ -18,7 +18,13 @@ class INVENTORY_API UInv_WidgetUtils : public UBlueprintFunctionLibrary
 public:
 
 	UFUNCTION(BlueprintCallable, category = "Inventory")
-	static FVector2D GetWidgetPosition(UWidget* Widget); 
+	static FVector2D GetWidgetPosition(UWidget* Widget);
+
+	UFUNCTION(BlueprintCallable, category = "Inventory")
+	static FVector2D GetWidgetSize(UWidget* Widget);
+
+	UFUNCTION(BlueprintCallable, category = "Inventory")
+	static bool IsWithinBounds(const FVector2D& CanvasPosition, const FVector2D& WidgetSize, const FVector2D& MousePosition);
 
 	// Allows us to calculate index location based on passed in parameters. FIntPoint can take X & Y 
 	static int32 GetIndexFromPosition(const FIntPoint& Position, const int32 Columns);

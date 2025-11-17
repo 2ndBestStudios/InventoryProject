@@ -57,6 +57,11 @@ void UInv_InventoryGrid::UpdateTileParameters(const FVector2D& CanvasPosition, c
 	TileParameters.TileCoordinates = HoveredTileCoordinates;
 	TileParameters.TileIndex = UInv_WidgetUtils::GetIndexFromPosition(HoveredTileCoordinates, Columns);
 	TileParameters.TileQuadrant = CalculateTileQuadrant(CanvasPosition, MousePosition);
+
+	if (CursorExitedCanvas(CanvasPosition, UInv_WidgetUtils::GetWidgetSize(CanvasPanel), MousePosition))
+	{
+		return;
+	}
 	
 	// Handle highlight/unhighlight of GridSlots
 	OnTileParametersUpdated(TileParameters); 
@@ -173,6 +178,20 @@ FInv_SpaceQueryResult UInv_InventoryGrid::CheckHoverPosition(const FIntPoint& Po
 	}
 
 	return Result;
+}
+
+bool UInv_InventoryGrid::CursorExitedCanvas(const FVector2D& CanvasPosition, const FVector2D& BoundarySize,
+	const FVector2D& Location)
+{
+	bLastMouseWithinCanvas = bMouseWithinCanvas;
+
+	bMouseWithinCanvas = UInv_WidgetUtils::IsWithinBounds(CanvasPosition, BoundarySize, Location);
+	if (!bMouseWithinCanvas && bLastMouseWithinCanvas)
+	{
+		//TODO:: Unhighlight slots
+		return true;
+	}
+	return false; 
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_ItemComponent* ItemComponent)

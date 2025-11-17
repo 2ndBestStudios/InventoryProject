@@ -137,7 +137,9 @@ private:
 
 	FIntPoint CalculateStartingCoordinate(const FIntPoint& Coordinate, const FIntPoint& Dimensions, const EInv_TileQuadrant Quadrant) const;
 
-	FInv_SpaceQueryResult CheckHoverPosition(const FIntPoint& Position, const FIntPoint& Dimensions); 
+	FInv_SpaceQueryResult CheckHoverPosition(const FIntPoint& Position, const FIntPoint& Dimensions);
+
+	bool CursorExitedCanvas(const FVector2D& CanvasPosition, const FVector2D& BoundarySize, const FVector2D& Location); 
 	
 	// Determine how much space is in a given GridSlot 
 	int32 DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize, const int32 AmountToFill, const UInv_GridSlot* GridSlot) const;
@@ -208,4 +210,7 @@ private:
 
 	// Checks if there is an item in space 
 	FInv_SpaceQueryResult CurrentSpaceQueryResult;
+
+	bool bMouseWithinCanvas;
+	bool bLastMouseWithinCanvas;
 };
