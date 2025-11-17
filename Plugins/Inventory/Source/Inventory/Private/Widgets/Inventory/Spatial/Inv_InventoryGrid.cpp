@@ -3,6 +3,7 @@
 
 #include "Widgets/Inventory/Spatial/Inv_InventoryGrid.h"
 
+#include "Inventory.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
@@ -101,10 +102,44 @@ void UInv_InventoryGrid::OnTileParametersUpdated(const FInv_TileParameters& Para
 	const FIntPoint Dimensions = HoverItem->GetGridDimensions(); 
 	
 	// Calculate the starting coordinate for highlighting
+	const FIntPoint StartingCoordinate = CalculateStartingCoordinate(Parameters.TileCoordinates, Dimensions, Parameters.TileQuadrant); 
 	// Check hover position
 		// Is it in the grid bounds?
 		// Any items in the way?
 		// If so, is there only one item in the way? (can we stop?) 
+}
+
+FIntPoint UInv_InventoryGrid::CalculateStartingCoordinate(const FIntPoint& Coordinate, const FIntPoint& Dimensions,
+	const EInv_TileQuadrant Quadrant) const
+{
+	// If the item has an even width it'll add extra padding when moving the item over 
+	const int32 HasEvenWidth = Dimensions.X % 2 == 0 ? 1 : 0;
+	const int32 HasEvenHeight = Dimensions.Y % 2 == 0 ? 1 : 0;
+
+	FIntPoint StartingCoordinate;
+	switch (Quadrant)
+	{
+		case EInv_TileQuadrant::TopLeft:
+			StartingCoordinate.X = Coordinate.X - FMath::FloorToInt(0.5f * Dimensions.X);
+			StartingCoordinate.Y = Coordinate.Y - FMath::FloorToInt(0.5f * Dimensions.Y);
+		break;
+		case EInv_TileQuadrant::TopRight:
+			StartingCoordinate.X = Coordinate.X + FMath::FloorToInt(0.5f * Dimensions.X) + HasEvenWidth;
+			StartingCoordinate.Y = Coordinate.Y - FMath::FloorToInt(0.5f * Dimensions.Y);
+		break;
+		case EInv_TileQuadrant::BottomLeft:
+			StartingCoordinate.X = Coordinate.X + FMath::FloorToInt(0.5f * Dimensions.X);
+			StartingCoordinate.Y = Coordinate.Y - FMath::FloorToInt(0.5f * Dimensions.Y) + HasEvenHeight;
+		break;
+		case EInv_TileQuadrant::BottomRight:
+			StartingCoordinate.X = Coordinate.X + FMath::FloorToInt(0.5f * Dimensions.X) + HasEvenWidth;
+			StartingCoordinate.Y = Coordinate.Y - FMath::FloorToInt(0.5f * Dimensions.Y) + HasEvenHeight;
+		break;
+		default:
+			UE_LOG(LogInventory, Error, TEXT("Invalid quadrant"))
+			return FIntPoint(-1,-1); 
+	}
+	return StartingCoordinate;
 }
 
 FInv_SlotAvailabilityResult UInv_InventoryGrid::HasRoomForItem(const UInv_ItemComponent* ItemComponent)
