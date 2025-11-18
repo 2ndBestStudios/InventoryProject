@@ -10,6 +10,7 @@
 #include "Widgets/Inventory/SlottedItems/Inv_SlottedItem.h"
 #include "Inv_InventoryGrid.generated.h"
 
+class UInv_ItemPopUp;
 class UInv_HoverItem;
 struct FInv_ImageFragment;
 struct FInv_GridFragment;
@@ -48,6 +49,8 @@ public:
 	// Mouse Cursor functionality 
 	void ShowCursor();
 	void HideCursor();
+
+	void SetOwningCanvas(UCanvasPanel* OwningCanvas); 
 	
 private:
 	// Constructs item grid 
@@ -196,6 +199,14 @@ private:
 	bool ShouldFillInStack(const int32 RoomInClickedSlot, const int32 HoveredStackCount) const;
 
 	void FillInStack(const int32 FillAmount, const int32 Remainder, const int32 Index);
+
+	void CreateItemPopUp(const int32 GridIndex);
+
+	UPROPERTY(EditAnywhere, Category="Inventory")
+	TSubclassOf<UInv_ItemPopUp> ItemPopUpClass;
+
+	UPROPERTY()
+	TObjectPtr<UInv_ItemPopUp> ItemPopUp;
 	
 	// Properties for Visible and Hidden Mouse Cursor 
 	UUserWidget* GetVisibleCursorWidget();
@@ -218,6 +229,8 @@ private:
 	
 	// Gives a reference for the InventoryComponent 
 	TWeakObjectPtr<UInv_InventoryComponent> InventoryComponent;
+
+	TWeakObjectPtr<UCanvasPanel> OwningCanvasPanel;
 	
 	// Creates ItemCategory 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), Category="Inventory")
