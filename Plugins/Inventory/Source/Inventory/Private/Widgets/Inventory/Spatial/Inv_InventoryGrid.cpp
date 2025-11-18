@@ -636,7 +636,8 @@ void UInv_InventoryGrid::AssignHoverItem(UInv_InventoryItem* InventoryItem)
 	HoverItem->SetIsStackable(InventoryItem->IsStackable());
 
 	// Changes the MouseCursor to the Widget when creating it 
-	GetOwningPlayer()->SetMouseCursorWidget(EMouseCursor::Default, HoverItem); 
+	GetOwningPlayer()->SetMouseCursorWidget(EMouseCursor::Default, HoverItem);
+	// Figure out how to add functionality to see mouse cursor change on picking up item 
 }
 
 int32 UInv_InventoryGrid::DetermineFillAmountForSlot(const bool bStackable, const int32 MaxStackSize,
@@ -783,13 +784,46 @@ void UInv_InventoryGrid::ClearHoverItem()
 	HoverItem->RemoveFromParent();
 	HoverItem = nullptr;
 
-	// Show mouse cursor 
+	// Show mouse cursor
+	ShowCursor();
+}
+
+UUserWidget* UInv_InventoryGrid::GetVisibleCursorWidget()
+{
+	if (!IsValid(GetOwningPlayer())) return nullptr;
+	if (!IsValid(VisibleCursorWidget))
+	{
+		VisibleCursorWidget = CreateWidget<UUserWidget>(GetOwningPlayer(), VisibleCursorWidgetClass);
+	}
+	return VisibleCursorWidget;
+}
+
+UUserWidget* UInv_InventoryGrid::GetHiddenCursorWidget()
+{
+	if (!IsValid(GetOwningPlayer())) return nullptr;
+	if (!IsValid(HiddenCursorWidget))
+	{
+		HiddenCursorWidget = CreateWidget<UUserWidget>(GetOwningPlayer(), HiddenCursorWidgetClass);
+	}
+	return HiddenCursorWidget;
+}
+
+void UInv_InventoryGrid::ShowCursor()
+{
+	if (!IsValid(GetOwningPlayer())) return;
+	GetOwningPlayer()->SetMouseCursorWidget(EMouseCursor::Default, GetVisibleCursorWidget());
+}
+
+void UInv_InventoryGrid::HideCursor()
+{
+	if (!IsValid(GetOwningPlayer())) return;
+	GetOwningPlayer()->SetMouseCursorWidget(EMouseCursor::Default, GetHiddenCursorWidget());
 }
 
 void UInv_InventoryGrid::OnGridSlotHovered(int32 GridIndex, const FPointerEvent& MouseEvent)
 {
 	// Checks for valid hover item, if there is it will highlight the GridSlot 
-	if (!IsValid(HoverItem)) return;
+	if (IsValid(HoverItem)) return;
 
 	UInv_GridSlot* GridSlot = GridSlots[GridIndex];
 	if (GridSlot->IsAvailable())
@@ -801,7 +835,7 @@ void UInv_InventoryGrid::OnGridSlotHovered(int32 GridIndex, const FPointerEvent&
 void UInv_InventoryGrid::OnGridSlotUnhovered(int32 GridIndex, const FPointerEvent& MouseEvent)
 {
 	// Checks for valid hover item, if there is it will unhighlight the GridSlot when mouse is gone 
-	if (!IsValid(HoverItem)) return;
+	if (IsValid(HoverItem)) return;
 
 	UInv_GridSlot* GridSlot = GridSlots[GridIndex];
 	if (GridSlot->IsAvailable())

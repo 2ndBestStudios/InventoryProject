@@ -62,4 +62,6 @@ private:
 
 	// Sets the active inventory grid 
 	void SetActiveGrid(UInv_InventoryGrid* InventoryGrid, UButton* Button);
+
+	TWeakObjectPtr<UInv_InventoryGrid> ActiveGrid;
 };

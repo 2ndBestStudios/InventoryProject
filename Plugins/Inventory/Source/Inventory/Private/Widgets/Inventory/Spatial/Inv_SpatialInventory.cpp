@@ -67,6 +67,11 @@ void UInv_SpatialInventory::DisableButton(UButton* Button)
 
 void UInv_SpatialInventory::SetActiveGrid(UInv_InventoryGrid* InventoryGrid, UButton* Button)
 {
+	// Sets the Active Mouse Cursor to Active Grid Type 
+	if (ActiveGrid.IsValid()) ActiveGrid->HideCursor(); 
+	ActiveGrid = InventoryGrid;
+	if (ActiveGrid.IsValid()) ActiveGrid->ShowCursor();
+	
 	// Disables button just clicked on from delegate. Enables other buttons 
 	DisableButton(Button);
 

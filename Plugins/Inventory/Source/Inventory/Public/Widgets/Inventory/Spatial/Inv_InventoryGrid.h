@@ -43,7 +43,11 @@ public:
 
 	// Callback function for the additem delegate from inventory component 
 	UFUNCTION()
-	void AddItem(UInv_InventoryItem* Item);  
+	void AddItem(UInv_InventoryItem* Item);
+
+	// Mouse Cursor functionality 
+	void ShowCursor();
+	void HideCursor();
 	
 private:
 	// Constructs item grid 
@@ -175,8 +179,24 @@ private:
 
 	void PutDownOnIndex(const int32 Index);
 
-	void ClearHoverItem(); 
+	void ClearHoverItem();
 
+	// Properties for Visible and Hidden Mouse Cursor 
+	UUserWidget* GetVisibleCursorWidget();
+	UUserWidget* GetHiddenCursorWidget();
+	
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UUserWidget> VisibleCursorWidgetClass;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<UUserWidget> HiddenCursorWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> VisibleCursorWidget;
+
+	UPROPERTY()
+	TObjectPtr<UUserWidget> HiddenCursorWidget;
+	
 	// Checks item manifest for item dimensions 
 	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
 	
