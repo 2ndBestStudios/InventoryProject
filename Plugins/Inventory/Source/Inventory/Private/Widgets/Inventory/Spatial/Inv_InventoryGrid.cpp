@@ -712,7 +712,8 @@ void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEve
 		// Should we swap their stack counts? (Room in the clicked slot == 0 && HoveredStackCount < MaxStackSize)
 		if (ShouldSwapStackCounts(RoomInClickedSlot, HoveredStackCount, MaxStackSize))
 		{
-			//Swap stack counts 
+			//Swap stack counts
+			SwapStackCounts(ClickedStackCount, HoveredStackCount, GridIndex); 
 		}
 		
 		// Should we consume the HoverItem's stacks?
@@ -843,6 +844,19 @@ bool UInv_InventoryGrid::ShouldSwapStackCounts(const int32 RoomInClickedSlot, co
 	const int32 MaxStackSize) const
 {
 	return RoomInClickedSlot == 0 && HoveredStackCount < MaxStackSize;
+}
+
+void UInv_InventoryGrid::SwapStackCounts(const int32 ClickedStackCount, const int32 HoveredStackCount,
+	const int32 Index)
+{
+	UInv_GridSlot* GridSlot = GridSlots[Index];
+	GridSlot->SetStackCount(HoveredStackCount);
+
+	// Check SlottedItems array for Index, UpdateStackCount by HoveredStack Count 
+	UInv_SlottedItem* ClickedSlottedItem = SlottedItems.FindChecked(Index);
+	ClickedSlottedItem->UpdateStackCount(HoveredStackCount);
+
+	HoverItem->UpdateStackCount(ClickedStackCount);
 }
 
 UUserWidget* UInv_InventoryGrid::GetVisibleCursorWidget()
