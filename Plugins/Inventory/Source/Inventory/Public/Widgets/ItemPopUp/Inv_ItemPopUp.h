@@ -24,13 +24,29 @@ class INVENTORY_API UInv_ItemPopUp : public UUserWidget
 	GENERATED_BODY()
 
 public:
+	// Override Functions 
 	virtual void NativeOnInitialized() override;
+	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent) override;
 
+	// Delegates 
 	FPopUpMenuSplit OnSplit;
 	FPopUpMenuDrop OnDrop;
 	FPopUpMenuConsume OnConsume;
 
-	int32 GetSplitAmount() const; 
+	// Slider values 
+	int32 GetSplitAmount() const;
+	void SetSliderParameters(const float Max, const float Value) const;
+
+	// Collapse unused properties of widget depending on item
+	void CollapseSplitButton() const;
+	void CollapseConsumeButton() const;
+
+	// Box size of widget
+	FVector2D GetBoxSize() const;
+
+	// GridIndex of item in reference 
+	void SetGridIndex(int32 Index) { GridIndex = Index; }
+	int32 GetGridIndex() const { return GridIndex; }
 
 private:
 
@@ -54,6 +70,7 @@ private:
 
 	int32 GridIndex{INDEX_NONE}; 
 
+	// Functions bound to delegate 
 	UFUNCTION()
 	void SplitButtonClicked();
 
@@ -64,6 +81,7 @@ private:
 	void ConsumeButtonClicked();
 
 	UFUNCTION()
-	void SliderValueChanged(float Value); 
+	void SliderValueChanged(float Value);
+	
 	
 };
