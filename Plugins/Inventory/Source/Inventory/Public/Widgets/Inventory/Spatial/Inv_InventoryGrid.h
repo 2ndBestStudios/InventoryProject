@@ -173,6 +173,10 @@ private:
 	UFUNCTION()
 	void OnGridSlotUnhovered(int32 GridIndex, const FPointerEvent& MouseEvent);
 
+	void PutDownOnIndex(const int32 Index);
+
+	void ClearHoverItem(); 
+
 	// Checks item manifest for item dimensions 
 	FIntPoint GetItemDimensions(const FInv_ItemManifest& Manifest) const;
 	
