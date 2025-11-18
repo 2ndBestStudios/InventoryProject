@@ -716,7 +716,12 @@ void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEve
 			SwapStackCounts(ClickedStackCount, HoveredStackCount, GridIndex); 
 		}
 		
-		// Should we consume the HoverItem's stacks?
+		// Should we consume the HoverItem's stacks? (Room in the clicked slot >= HoveredStackCount)
+		if (ShouldConsumeHoverItemStacks(HoveredStackCount, RoomInClickedSlot))
+		{
+			ConsumeHoverItemStacks(ClickedStackCount, HoveredStackCount, GridIndex);
+		}
+		
 		// Should we fill in the stacks of the clicked item? (And not consume the hover item)
 		// Is there no room in the clicked slot?
 
@@ -857,6 +862,33 @@ void UInv_InventoryGrid::SwapStackCounts(const int32 ClickedStackCount, const in
 	ClickedSlottedItem->UpdateStackCount(HoveredStackCount);
 
 	HoverItem->UpdateStackCount(ClickedStackCount);
+}
+
+bool UInv_InventoryGrid::ShouldConsumeHoverItemStacks(const int32 HoveredStackCount,
+	const int32 RoomInClickedSlot) const
+{
+	return RoomInClickedSlot >= HoveredStackCount;
+}
+
+void UInv_InventoryGrid::ConsumeHoverItemStacks(const int32 ClickedStackCount, const int32 HoveredStackCount,
+	const int32 Index)
+{
+	// Stores HoveredStackCount and then adds it to the ClickedItemStackCount 
+	const int32 AmountToTransfer = HoveredStackCount;
+	const int32 NewClickedStackCount = ClickedStackCount + AmountToTransfer;
+	
+	// Update the GridSlot at Index, and SlottedItem Array at Index the NewStackCount
+	GridSlots[Index]->SetStackCount(NewClickedStackCount);
+	SlottedItems.FindChecked(Index)->UpdateStackCount(NewClickedStackCount);
+
+	// Remove HoverItem and show mouse cursor 
+	ClearHoverItem();
+	ShowCursor();
+
+	// Update the background of the slots 
+	const FInv_GridFragment* GridFragment = GridSlots[Index]->GetInventoryItem()->GetItemManifest().GetFragmentOfType<FInv_GridFragment>();
+	const FIntPoint Dimensions = GridFragment ? GridFragment->GetGridSize() : FIntPoint(1,1);
+	HighlightSlots(Index, Dimensions);
 }
 
 UUserWidget* UInv_InventoryGrid::GetVisibleCursorWidget()
