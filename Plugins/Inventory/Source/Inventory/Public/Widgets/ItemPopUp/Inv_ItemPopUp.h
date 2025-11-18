@@ -9,7 +9,12 @@
 class USizeBox;
 class UButton;
 class USlider;
-class UTextBlock; 
+class UTextBlock;
+
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FPopUpMenuSplit, int32, SplitAmount, int32, Index);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FPopUpMenuDrop, int32, Index);
+DECLARE_DYNAMIC_DELEGATE_OneParam(FPopUpMenuConsume, int32, Index);
+
 /**
  * The ItemPopUp widget shows up when right-clicking on an item in the inventory grid 
  */
@@ -20,6 +25,12 @@ class INVENTORY_API UInv_ItemPopUp : public UUserWidget
 
 public:
 	virtual void NativeOnInitialized() override;
+
+	FPopUpMenuSplit OnSplit;
+	FPopUpMenuDrop OnDrop;
+	FPopUpMenuConsume OnConsume;
+
+	int32 GetSplitAmount() const; 
 
 private:
 
@@ -40,6 +51,8 @@ private:
 	
 	UPROPERTY(meta=(BindWidget))
 	TObjectPtr<USizeBox> SizeBox_Root;
+
+	int32 GridIndex{INDEX_NONE}; 
 
 	UFUNCTION()
 	void SplitButtonClicked();
