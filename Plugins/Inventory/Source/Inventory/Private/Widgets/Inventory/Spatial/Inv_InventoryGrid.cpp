@@ -696,7 +696,15 @@ void UInv_InventoryGrid::OnSlottedItemClicked(int32 GridIndex, const FPointerEve
 	{
 		// Pickup - Assign the hover item, and remove the slotted item from the grid
 		PickUp(ClickedInventoryItem, GridIndex);
+		return; 
 	}
+
+	// Do the HoveredItem and the clicked InventoryItem share a type, and are they stackable?
+		// Should we swap their stack counts?
+		// Should we consume the HoverItem's stacks?
+		// Should we fill in the stacks of the clicked item? (And not consume the hover item)
+		// Is there no room in the clicked slot?
+	// Swap with the hover item
 }
 
 FIntPoint UInv_InventoryGrid::GetItemDimensions(const FInv_ItemManifest& Manifest) const
