@@ -181,6 +181,10 @@ private:
 
 	void ClearHoverItem();
 
+	bool IsSameStackable(const UInv_InventoryItem* ClickedInventoryItem) const;
+
+	void SwapWithHoverItem(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex);
+
 	// Properties for Visible and Hidden Mouse Cursor 
 	UUserWidget* GetVisibleCursorWidget();
 	UUserWidget* GetHiddenCursorWidget();
