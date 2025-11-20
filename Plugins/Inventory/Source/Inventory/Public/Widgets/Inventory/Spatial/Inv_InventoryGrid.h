@@ -187,7 +187,9 @@ private:
 	void OnPopUpMenuDrop(int32 Index);
 
 	UFUNCTION()
-	void OnPopUpMenuConsume(int32 Index); 
+	void OnPopUpMenuConsume(int32 Index);
+
+	void DropItem(); 
 
 	void PutDownOnIndex(const int32 Index);
 

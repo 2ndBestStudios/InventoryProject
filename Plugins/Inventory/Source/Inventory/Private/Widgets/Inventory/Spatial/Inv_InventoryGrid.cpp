@@ -1049,6 +1049,22 @@ void UInv_InventoryGrid::OnPopUpMenuSplit(int32 SplitAmount, int32 Index)
 
 void UInv_InventoryGrid::OnPopUpMenuDrop(int32 Index)
 {
+	UInv_InventoryItem* RightClickedItem = GridSlots[Index]->GetInventoryItem().Get();
+	if (!IsValid(RightClickedItem)) return;
+
+	PickUp(RightClickedItem, Index);
+	DropItem(); 
+}
+
+void UInv_InventoryGrid::DropItem()
+{
+	if (!IsValid(HoverItem)) return;
+	if (!IsValid(HoverItem->GetInventoryItem())) return;
+
+	// Tell server to actually drop the item
+
+	ClearHoverItem();
+	ShowCursor();
 }
 
 void UInv_InventoryGrid::OnPopUpMenuConsume(int32 Index)
