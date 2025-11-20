@@ -41,6 +41,21 @@ void UInv_InventoryComponent::Server_DropItem_Implementation(UInv_InventoryItem*
 	SpawnDroppedItem(Item, StackCount); 
 }
 
+void UInv_InventoryComponent::Server_ConsumeItem_Implementation(UInv_InventoryItem* Item)
+{
+	const int32 NewStackCount = Item->GetTotalStackCount() -1;
+	if (NewStackCount <= 0)
+	{
+		InventoryList.RemoveEntry(Item);
+	}
+	else
+	{
+		Item->SetTotalStackCount(NewStackCount);
+	}
+
+	// Get the consumable fragment and call consume 
+}
+
 void UInv_InventoryComponent::SpawnDroppedItem(UInv_InventoryItem* Item, int32 StackCount)
 {
 	// Spawn the dropped item in the level, creating it at a random angle 

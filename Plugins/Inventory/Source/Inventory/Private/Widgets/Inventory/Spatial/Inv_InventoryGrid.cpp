@@ -1081,6 +1081,7 @@ void UInv_InventoryGrid::OnPopUpMenuConsume(int32 Index)
 	SlottedItems.FindChecked(UpperLeftIndex)->UpdateStackCount(NewStackCount);
 
 	// Tell the server we're consuming an item
+	InventoryComponent->Server_ConsumeItem(RightClickedItem); 
 
 	if (NewStackCount <= 0)
 	{
