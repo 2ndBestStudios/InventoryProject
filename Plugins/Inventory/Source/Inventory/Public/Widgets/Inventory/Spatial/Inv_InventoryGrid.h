@@ -52,7 +52,9 @@ public:
 
 	void SetOwningCanvas(UCanvasPanel* OwningCanvas);
 
-	void DropItem(); 
+	void DropItem();
+
+	bool HasHoverItem() const; 
 	
 private:
 	// Constructs item grid 

@@ -30,7 +30,13 @@ public:
 
 	// Template function that takes in an array, loops through it, and calls a function 
 	template<typename T, typename FuncT>
-	static void ForEach2D(TArray<T>& Array, int32 Index, const FIntPoint& Range2D, int32 GridColumns, const FuncT& Function); 
+	static void ForEach2D(TArray<T>& Array, int32 Index, const FIntPoint& Range2D, int32 GridColumns, const FuncT& Function);
+
+	UFUNCTION(blueprintCallable, Category="Inventory")
+	static void ItemHovered(APlayerController* PC, UInv_InventoryItem* Item);
+
+	UFUNCTION(blueprintCallable, Category="Inventory")
+	static void ItemUnhovered(APlayerController* PC); 
 };
 
 template<typename T, typename FuncT>

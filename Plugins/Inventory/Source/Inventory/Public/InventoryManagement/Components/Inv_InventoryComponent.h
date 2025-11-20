@@ -55,6 +55,8 @@ public:
 	// Required for replication 
 	void AddRepSubObj(UObject* SubObj);
 
+	UInv_InventoryBase* GetInventoryMenu() const { return InventoryMenu; }
+
 	FInventoryItemChange OnItemAdded;
 	FInventoryItemChange OnItemRemoved;
 	FNoRoomInInventory NoRoomInventory;

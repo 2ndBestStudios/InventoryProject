@@ -1068,6 +1068,11 @@ void UInv_InventoryGrid::DropItem()
 	ShowCursor();
 }
 
+bool UInv_InventoryGrid::HasHoverItem() const
+{
+	return IsValid(HoverItem);
+}
+
 void UInv_InventoryGrid::OnPopUpMenuConsume(int32 Index)
 {
 	UInv_InventoryItem* RightClickedItem = GridSlots[Index]->GetInventoryItem().Get();

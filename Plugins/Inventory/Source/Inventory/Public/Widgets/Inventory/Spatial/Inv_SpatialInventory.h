@@ -25,6 +25,10 @@ public:
 
 	virtual FInv_SlotAvailabilityResult HasRoomForItem(UInv_ItemComponent* ItemComponent) const override;
 
+	virtual void OnItemHovered(UInv_InventoryItem* Item) override;
+	virtual void OnItemUnHovered() override;
+	virtual bool HasHoverItem() const override;
+
 private:
 
 	UPROPERTY(meta = (BindWidget))
