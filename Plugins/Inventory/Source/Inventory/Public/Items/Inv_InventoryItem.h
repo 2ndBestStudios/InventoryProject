@@ -30,6 +30,8 @@ public:
 	// Helper function to check StackableFragment 
 	bool IsStackable() const;
 
+	bool IsConsumable() const; 
+
 	// Getter and setter functions 
 	int32 GetTotalStackCount() const {return TotalStackCount;}
 	void SetTotalStackCount(int32 Count) {TotalStackCount = Count;}
