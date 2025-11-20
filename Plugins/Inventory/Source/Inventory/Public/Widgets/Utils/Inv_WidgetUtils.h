@@ -26,6 +26,8 @@ public:
 	UFUNCTION(BlueprintCallable, category = "Inventory")
 	static bool IsWithinBounds(const FVector2D& CanvasPosition, const FVector2D& WidgetSize, const FVector2D& MousePosition);
 
+	static FVector2D GetClampedWidgetPosition(const FVector2D& Boundary, const FVector2D& WidgetSize, const FVector2D& MousePosition);
+
 	// Allows us to calculate index location based on passed in parameters. FIntPoint can take X & Y 
 	static int32 GetIndexFromPosition(const FIntPoint& Position, const int32 Columns);
 	// Allows us to get x,y position from a given index 
