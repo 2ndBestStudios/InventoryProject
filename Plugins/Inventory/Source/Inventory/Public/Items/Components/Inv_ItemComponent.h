@@ -22,6 +22,8 @@ public:
 	// Needed for replication 
 	virtual void GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const override;
 
+	void InitItemManifest(FInv_ItemManifest CopyOfManifest); 
+
 	// Returns ItemManifest 
 	FInv_ItemManifest GetItemManifest() const {return ItemManifest;}
 

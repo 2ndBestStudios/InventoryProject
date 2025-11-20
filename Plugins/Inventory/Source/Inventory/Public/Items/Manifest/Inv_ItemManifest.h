@@ -36,6 +36,8 @@ struct INVENTORY_API FInv_ItemManifest
 	// Mutable template to get fragment
 	template<typename T> requires std::derived_from<T, FInv_ItemFragment>
 	T* GetFragmentOfTypeMutable();
+
+	void SpawnPickUpActor(const UObject* WorldContextObject, const FVector& SpawnLocation, const FRotator& SpawnRotation);
 	
 private:
 
@@ -49,7 +51,10 @@ private:
 
 	// Gameplay tag accessibility is added to item manifest 
 	UPROPERTY(EditAnywhere, Category = "Inventory")
-	FGameplayTag ItemType; 
+	FGameplayTag ItemType;
+
+	UPROPERTY(EditAnywhere, Category = "Inventory")
+	TSubclassOf<AActor> PickupActorClass;
 };
 
 template<typename T>
