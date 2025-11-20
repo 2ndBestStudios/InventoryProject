@@ -50,7 +50,9 @@ public:
 	void ShowCursor();
 	void HideCursor();
 
-	void SetOwningCanvas(UCanvasPanel* OwningCanvas); 
+	void SetOwningCanvas(UCanvasPanel* OwningCanvas);
+
+	void DropItem(); 
 	
 private:
 	// Constructs item grid 
@@ -188,8 +190,6 @@ private:
 
 	UFUNCTION()
 	void OnPopUpMenuConsume(int32 Index);
-
-	void DropItem(); 
 
 	void PutDownOnIndex(const int32 Index);
 
