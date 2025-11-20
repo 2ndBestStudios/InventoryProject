@@ -54,7 +54,7 @@ void UInv_InventoryComponent::SpawnDroppedItem(UInv_InventoryItem* Item, int32 S
 	const FRotator SpawnRotation = FRotator::ZeroRotator;
 
 	// Have the item manifest spawn the pickup actor
-	FInv_ItemManifest ItemManifest = Item->GetItemManifestMutable();
+	FInv_ItemManifest& ItemManifest = Item->GetItemManifestMutable();
 	if (FInv_StackableFragment* StackableFragment = ItemManifest.GetFragmentOfTypeMutable<FInv_StackableFragment>())
 	{
 		StackableFragment->SetStackCount(StackCount);
