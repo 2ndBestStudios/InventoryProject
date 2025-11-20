@@ -50,7 +50,7 @@ private:
 	EInv_ItemCategory ItemCategory{EInv_ItemCategory::None};
 
 	// Gameplay tag accessibility is added to item manifest 
-	UPROPERTY(EditAnywhere, Category = "Inventory")
+	UPROPERTY(EditAnywhere, Category = "Inventory", meta = (Categories = "GameItems"))
 	FGameplayTag ItemType;
 
 	UPROPERTY(EditAnywhere, Category = "Inventory")

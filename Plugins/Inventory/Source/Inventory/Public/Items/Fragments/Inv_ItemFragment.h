@@ -5,6 +5,8 @@
 
 #include "Inv_ItemFragment.generated.h"
 
+class APlayerController;
+
 USTRUCT(BlueprintType)
 struct FInv_ItemFragment
 {
@@ -25,7 +27,7 @@ struct FInv_ItemFragment
 private:
 
 	// Unique id for fragments 
-	UPROPERTY(EditAnywhere, Category="Inventory")
+	UPROPERTY(EditAnywhere, Category="Inventory", meta = (Categories = "FragmentTags"))
 	FGameplayTag FragmentTag = FGameplayTag::EmptyTag;
 	
 };
@@ -67,6 +69,7 @@ private:
 	// Provides icon for item
 	UPROPERTY(EditAnywhere, Category="Inventory")
 	TObjectPtr<UTexture2D> Icon{nullptr};
+	
 	// Can be adjusted for inspecting the item with widget 
 	UPROPERTY(EditAnywhere, Category="Inventory")
 	FVector2D IconDimensions{44.f, 44.f};
@@ -85,7 +88,38 @@ private:
 	// MaxStackSize for item
 	UPROPERTY(EditAnywhere, Category="Inventory")
 	int32 MaxStackSize{1};
+	
 	// How many stacks does this item have 
 	UPROPERTY(EditAnywhere, Category="Inventory")
 	int32 StackCount{1}; 
+};
+
+USTRUCT(BlueprintType)
+struct FInv_ConsumableFragment : public FInv_ItemFragment
+{
+	GENERATED_BODY()
+
+	virtual void OnConsume(APlayerController* PC) {}
+};
+
+USTRUCT(BlueprintType)
+struct FInv_HealthPotionFragment : public FInv_ConsumableFragment
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category="Inventory")
+	float HealAmount = 20.f; 
+	
+	virtual void OnConsume(APlayerController* PC) override;
+};
+
+USTRUCT(BlueprintType)
+struct FInv_ManaPotionFragment : public FInv_ConsumableFragment
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category="Inventory")
+	float ManaAmount = 20.f; 
+	
+	virtual void OnConsume(APlayerController* PC) override;
 };

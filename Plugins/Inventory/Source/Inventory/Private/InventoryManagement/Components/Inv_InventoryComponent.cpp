@@ -53,7 +53,11 @@ void UInv_InventoryComponent::Server_ConsumeItem_Implementation(UInv_InventoryIt
 		Item->SetTotalStackCount(NewStackCount);
 	}
 
-	// Get the consumable fragment and call consume 
+	// Get the consumable fragment and call consume
+	if (FInv_ConsumableFragment* ConsumableFragment = Item->GetItemManifestMutable().GetFragmentOfTypeMutable<FInv_ConsumableFragment>())
+	{
+		ConsumableFragment->OnConsume(OwningController.Get()); 
+	}
 }
 
 void UInv_InventoryComponent::SpawnDroppedItem(UInv_InventoryItem* Item, int32 StackCount)
