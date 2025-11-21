@@ -69,6 +69,36 @@ void FInv_LabeledNumberFragment::Manifest()
 	bRandomizeOnManifest = false;
 }
 
+void FInv_ConsumableFragment::OnConsume(APlayerController* PC)
+{
+	for (auto& Modifier : ConsumeModifiers)
+	{
+		auto& ModRef = Modifier.GetMutable<>();
+		ModRef.OnConsume(PC); 
+	}
+}
+
+void FInv_ConsumableFragment::Assimilate(UInv_CompositeBase* CompositeBase) const
+{
+	FInv_InventoryItemFragment::Assimilate(CompositeBase);
+	for (const auto& Modifier : ConsumeModifiers)
+	{
+		const auto& ModRef = Modifier.Get();
+		ModRef.Assimilate(CompositeBase);
+	}
+}
+
+void FInv_ConsumableFragment::Manifest()
+{
+	FInv_InventoryItemFragment::Manifest();
+
+	for (auto& Modifier : ConsumeModifiers)
+	{
+		auto& ModRef = Modifier.GetMutable<>();
+		ModRef.Manifest(); 
+	}
+}
+
 void FInv_HealthPotionFragment::OnConsume(APlayerController* PC)
 {
 	// Get a stats component from the PC or get the AbilitySystemComponent and apply a gameplay effect

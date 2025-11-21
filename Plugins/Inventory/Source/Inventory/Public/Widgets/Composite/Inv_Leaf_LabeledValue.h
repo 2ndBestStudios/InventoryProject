@@ -33,5 +33,5 @@ private:
 	int32 FontSize_Label{12};
 
 	UPROPERTY(meta = (BindWidget))
-	int32 FontSize_Value{18};
+	int32 FontSize_Value{12};
 };
