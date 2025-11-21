@@ -17,6 +17,8 @@ struct INVENTORY_API FInv_ItemManifest
 {
 	GENERATED_BODY()
 
+	TArray<TInstancedStruct<FInv_ItemFragment>>& GetFragmentsMutable() { return Fragments; }
+	
 	// Creates a NewObject
 	UInv_InventoryItem* Manifest(UObject* NewOuter);
 	
@@ -47,6 +49,8 @@ struct INVENTORY_API FInv_ItemManifest
 	
 private:
 
+	void ClearFragments(); 
+	
 	// Holds an array of instanced struct item fragments 
 	UPROPERTY(EditAnywhere, Category="Inventory", meta = (ExcludeBaseStruct))
 	TArray<TInstancedStruct<FInv_ItemFragment>> Fragments;
