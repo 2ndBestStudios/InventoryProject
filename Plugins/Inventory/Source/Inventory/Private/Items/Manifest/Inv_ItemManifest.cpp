@@ -2,6 +2,8 @@
 
 #include "Items/Inv_InventoryItem.h"
 #include "Items/Components/Inv_ItemComponent.h"
+#include "Items/Fragments/Inv_ItemFragment.h"
+#include "Widgets/Composite/Inv_CompositeBase.h"
 
 UInv_InventoryItem* FInv_ItemManifest::Manifest(UObject* NewOuter)
 {
@@ -12,8 +14,22 @@ UInv_InventoryItem* FInv_ItemManifest::Manifest(UObject* NewOuter)
 	return Item;
 }
 
+void FInv_ItemManifest::AssimilateInventoryFragments(UInv_CompositeBase* CompositeBase) const
+{
+	// Item manifest checks all of its fragments and looks for InventoryItemFragment
+	// It then calls apply function from the CompositeBase, which takes in the function call of Assimilate on the fragment 
+	const auto& InventoryItemFragments = GetAllFragmentsOfType<FInv_InventoryItemFragment>();
+	for (const auto* Fragment : InventoryItemFragments)
+	{
+		CompositeBase->ApplyFunction([Fragment](UInv_CompositeBase* Widget)
+		{
+			Fragment->Assimilate(Widget); 
+		});
+	}
+}
+
 void FInv_ItemManifest::SpawnPickUpActor(const UObject* WorldContextObject, const FVector& SpawnLocation,
-	const FRotator& SpawnRotation)
+                                         const FRotator& SpawnRotation)
 {
 	if (!IsValid(PickupActorClass) || !IsValid(WorldContextObject)) return;
 

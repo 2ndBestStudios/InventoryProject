@@ -12,6 +12,7 @@
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Components/CanvasPanel.h"
 #include "Components/CanvasPanelSlot.h"
+#include "Items/Inv_InventoryItem.h"
 #include "Widgets/ItemDescription/Inv_ItemDescription.h"
 
 void UInv_SpatialInventory::NativeOnInitialized()
@@ -82,6 +83,8 @@ FInv_SlotAvailabilityResult UInv_SpatialInventory::HasRoomForItem(UInv_ItemCompo
 
 void UInv_SpatialInventory::OnItemHovered(UInv_InventoryItem* Item)
 {
+
+	const auto& Manifest = Item->GetItemManifest(); 
 	UInv_ItemDescription* DescriptionWidget = GetItemDescription();
 	DescriptionWidget->SetVisibility(ESlateVisibility::Collapsed);
 
@@ -89,12 +92,15 @@ void UInv_SpatialInventory::OnItemHovered(UInv_InventoryItem* Item)
 	GetOwningPlayer()->GetWorldTimerManager().ClearTimer(DescriptionTimer);
 
 	FTimerDelegate DescriptionTimerDelegate;
-	DescriptionTimerDelegate.BindLambda([this]
+	DescriptionTimerDelegate.BindLambda([this, &Manifest, DescriptionWidget]
 	{
+		// Assimilate the manifest into the ItemDescription Widget 		
+		Manifest.AssimilateInventoryFragments(DescriptionWidget);
+		
 		GetItemDescription()->SetVisibility(ESlateVisibility::HitTestInvisible);
 	});
 
-	GetOwningPlayer()->GetWorldTimerManager().SetTimer(DescriptionTimer, DescriptionTimerDelegate, DescriptionTimerDelay, false); 
+	GetOwningPlayer()->GetWorldTimerManager().SetTimer(DescriptionTimer, DescriptionTimerDelegate, DescriptionTimerDelay, false);
 }
 
 void UInv_SpatialInventory::OnItemUnHovered()
