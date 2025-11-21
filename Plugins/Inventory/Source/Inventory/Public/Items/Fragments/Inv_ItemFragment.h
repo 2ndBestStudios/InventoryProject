@@ -71,12 +71,14 @@ private:
 };
 
 USTRUCT(BlueprintType)
-struct FInv_ImageFragment : public FInv_ItemFragment
+struct FInv_ImageFragment : public FInv_InventoryItemFragment
 {
 	GENERATED_BODY()
 
 	// Getter 
 	UTexture2D* GetIcon() const { return Icon; }
+
+	virtual void Assimilate(UInv_CompositeBase* CompositeBase) const;
 	
 private:
 

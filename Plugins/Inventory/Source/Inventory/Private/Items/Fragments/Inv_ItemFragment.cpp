@@ -1,6 +1,7 @@
 ﻿#include "Items/Fragments/Inv_ItemFragment.h"
 
 #include "Widgets/Composite/Inv_CompositeBase.h"
+#include "Widgets/Composite/Inv_Leaf_Image.h"
 
 void FInv_InventoryItemFragment::Assimilate(UInv_CompositeBase* CompositeBase) const
 {
@@ -11,6 +12,19 @@ void FInv_InventoryItemFragment::Assimilate(UInv_CompositeBase* CompositeBase) c
 bool FInv_InventoryItemFragment::MatchesWidgetTag(const UInv_CompositeBase* CompositeBase) const
 {
 	return CompositeBase->GetFragmentTag().MatchesTagExact(GetFragmentTag());
+}
+
+void FInv_ImageFragment::Assimilate(UInv_CompositeBase* CompositeBase) const
+{
+	FInv_InventoryItemFragment::Assimilate(CompositeBase);
+	if (!MatchesWidgetTag(CompositeBase)) return;
+
+	UInv_Leaf_Image* Image = Cast<UInv_Leaf_Image>(CompositeBase);
+	if (!IsValid(Image)) return;
+
+	Image->SetImage(Icon);
+	Image->SetBoxSize(IconDimensions);
+	Image->SetImageSize(IconDimensions);
 }
 
 void FInv_HealthPotionFragment::OnConsume(APlayerController* PC)
