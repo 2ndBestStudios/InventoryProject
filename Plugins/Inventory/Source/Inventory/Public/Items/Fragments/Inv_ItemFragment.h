@@ -3,6 +3,7 @@
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
 #include "Widgets/Composite/Inv_CompositeBase.h"
+#include "Windows/WindowsApplication.h"
 
 #include "Inv_ItemFragment.generated.h"
 
@@ -78,7 +79,7 @@ struct FInv_ImageFragment : public FInv_InventoryItemFragment
 	// Getter 
 	UTexture2D* GetIcon() const { return Icon; }
 
-	virtual void Assimilate(UInv_CompositeBase* CompositeBase) const;
+	virtual void Assimilate(UInv_CompositeBase* CompositeBase) const override;
 	
 private:
 
@@ -89,6 +90,22 @@ private:
 	// Can be adjusted for inspecting the item with widget 
 	UPROPERTY(EditAnywhere, Category="Inventory")
 	FVector2D IconDimensions{44.f, 44.f};
+};
+
+USTRUCT(BlueprintType)
+struct FInv_TextFragment : public FInv_InventoryItemFragment
+{
+	GENERATED_BODY()
+
+	FText GetText() const { return FragmentText; }
+	void SetText(const FText& Text) { FragmentText = Text; }
+	virtual void Assimilate(UInv_CompositeBase* CompositeBase) const override;
+
+	
+private:
+
+	UPROPERTY(EditAnywhere, Category="Inventory")
+	FText FragmentText; 
 };
 
 USTRUCT(BlueprintType)
