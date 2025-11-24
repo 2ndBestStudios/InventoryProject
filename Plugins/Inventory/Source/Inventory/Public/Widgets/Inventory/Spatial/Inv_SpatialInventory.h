@@ -6,6 +6,7 @@
 #include "Widgets/Inventory/InventoryBase/Inv_InventoryBase.h"
 #include "Inv_SpatialInventory.generated.h"
 
+class UInv_EquippedGridSlot;
 class UInv_ItemDescription;
 class UCanvasPanel;
 class UInv_InventoryComponent;
@@ -33,6 +34,9 @@ public:
 	virtual bool HasHoverItem() const override;
 
 private:
+
+	UPROPERTY()
+	TArray<TObjectPtr<UInv_EquippedGridSlot>> EquippedGridSlots;
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCanvasPanel> CanvasPanel;
@@ -81,6 +85,9 @@ private:
 
 	UFUNCTION()
 	void ShowCraftables();
+
+	UFUNCTION()
+	void EquippedGridSlotClicked(UInv_EquippedGridSlot* EquippedGridSlot, const FGameplayTag& EquipmentTypeTag); 
 
 	// Disables button just clicked 
 	void DisableButton(UButton* Button);

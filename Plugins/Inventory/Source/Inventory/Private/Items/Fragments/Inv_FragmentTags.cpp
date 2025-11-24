@@ -11,6 +11,11 @@ namespace FragmentTags
 
 	UE_DEFINE_GAMEPLAY_TAG(PrimaryStatFragment, "FragmentTags.PrimaryStatFragment")
 
+	UE_DEFINE_GAMEPLAY_TAG(ItemTypeFragment, "FragmentTags.ItemTypeFragment")
+	UE_DEFINE_GAMEPLAY_TAG(FlavorTextFragment, "FragmentTags.FlavorTextFragment")
+	UE_DEFINE_GAMEPLAY_TAG(SellValueFragment, "FragmentTags.SellValueFragment")
+	UE_DEFINE_GAMEPLAY_TAG(RequiredLevelFragment, "FragmentTags.RequiredLevelFragment")
+
 	namespace StatMod
 	{
 		UE_DEFINE_GAMEPLAY_TAG(StatMod_1, "FragmentTags.StatMod.1")
