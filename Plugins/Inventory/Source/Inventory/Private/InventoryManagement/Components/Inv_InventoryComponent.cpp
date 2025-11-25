@@ -60,6 +60,20 @@ void UInv_InventoryComponent::Server_ConsumeItem_Implementation(UInv_InventoryIt
 	}
 }
 
+void UInv_InventoryComponent::Server_EquipSlotClicked_Implementation(UInv_InventoryItem* ItemToEquip,
+	UInv_InventoryItem* ItemToUnequip)
+{
+	MultiCast_EquipSlotClicked(ItemToEquip, ItemToUnequip);
+}
+
+void UInv_InventoryComponent::MultiCast_EquipSlotClicked_Implementation(UInv_InventoryItem* ItemToEquip,
+	UInv_InventoryItem* ItemToUnequip)
+{
+	// Equipment Component will listen to these delegates 
+	OnItemEquipped.Broadcast(ItemToEquip); 
+	OnItemUnEquipped.Broadcast(ItemToUnequip);
+}
+
 void UInv_InventoryComponent::SpawnDroppedItem(UInv_InventoryItem* Item, int32 StackCount)
 {
 	// Spawn the dropped item in the level, creating it at a random angle 

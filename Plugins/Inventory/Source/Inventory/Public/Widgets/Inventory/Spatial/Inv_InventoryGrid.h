@@ -60,6 +60,8 @@ public:
 	
 	float GetTileSize() const {return TileSize;}
 	
+	void ClearHoverItem();
+	
 private:
 	// Constructs item grid 
 	void ConstructGrid(); 
@@ -198,8 +200,6 @@ private:
 	void OnPopUpMenuConsume(int32 Index);
 
 	void PutDownOnIndex(const int32 Index);
-
-	void ClearHoverItem();
 
 	bool IsSameStackable(const UInv_InventoryItem* ClickedInventoryItem) const;
 
