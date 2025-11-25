@@ -54,7 +54,9 @@ public:
 
 	void DropItem();
 
-	bool HasHoverItem() const; 
+	bool HasHoverItem() const;
+
+	UInv_HoverItem* GetHoverItem() const; 
 	
 private:
 	// Constructs item grid 

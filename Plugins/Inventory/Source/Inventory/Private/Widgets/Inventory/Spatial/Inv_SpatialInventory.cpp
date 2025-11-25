@@ -136,6 +136,13 @@ bool UInv_SpatialInventory::HasHoverItem() const
 	return false; 
 }
 
+UInv_HoverItem* UInv_SpatialInventory::GetHoverItem() const
+{
+	if (!ActiveGrid.IsValid()) return nullptr;
+
+	return ActiveGrid->GetHoverItem(); 
+}
+
 UInv_ItemDescription* UInv_SpatialInventory::GetItemDescription()
 {
 	if (!IsValid(ItemDescription))
