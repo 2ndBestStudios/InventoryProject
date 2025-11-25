@@ -58,6 +58,8 @@ public:
 
 	UInv_HoverItem* GetHoverItem() const; 
 	
+	float GetTileSize() const {return TileSize;}
+	
 private:
 	// Constructs item grid 
 	void ConstructGrid(); 
