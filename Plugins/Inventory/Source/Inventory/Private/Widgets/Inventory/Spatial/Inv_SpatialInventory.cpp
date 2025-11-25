@@ -35,7 +35,7 @@ void UInv_SpatialInventory::NativeOnInitialized()
 	WidgetTree->ForEachWidget([this](UWidget* Widget)
 	{
 		UInv_EquippedGridSlot* EquippedGridSlot = Cast<UInv_EquippedGridSlot>(Widget);
-		if (!IsValid(EquippedGridSlot))
+		if (IsValid(EquippedGridSlot))
 		{
 			EquippedGridSlots.Add(EquippedGridSlot);
 			EquippedGridSlot->EquippedGridSlotClicked.AddDynamic(this, &ThisClass::EquippedGridSlotClicked);
