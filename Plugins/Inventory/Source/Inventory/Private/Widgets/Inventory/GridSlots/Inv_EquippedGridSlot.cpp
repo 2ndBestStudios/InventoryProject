@@ -9,6 +9,7 @@
 #include "Items/Fragments/Inv_FragmentTags.h"
 #include "Items/Fragments/Inv_ItemFragment.h"
 #include "Widgets/Inventory/HoverItem/Inv_HoverItem.h"
+#include "Widgets/Inventory/SlottedItems/Inv_EquippedSlottedItem.h"
 
 void UInv_EquippedGridSlot::NativeOnMouseEnter(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
@@ -61,14 +62,19 @@ UInv_EquippedSlottedItem* UInv_EquippedGridSlot::OnItemEquipped(UInv_InventoryIt
 	const FVector2D DrawSize = GridDimensions * IconTileWidth;
 	
 	// Create the Equipped Slotted Item Widget 
+	EquippedSlottedItem = CreateWidget<UInv_EquippedSlottedItem>(GetOwningPlayer(), EquippedSlottedItemClass);
 	
 	// Set the Slotted Item's Inventory Item 
+	EquippedSlottedItem->SetInventoryItem(Item);
 	
 	// Set the Slotted Item's Equipment Type Tag 
+	EquippedSlottedItem->SetEquipmentTypeTag(EquipmentTag);
 	
 	// Hide the Stack Count widget on the Slotted Item 
+	EquippedSlottedItem->UpdateStackCount(0);
 	
 	// Set Inventory Item on this class (the Equipped Grid Slot) 
+	SetInventoryItem(Item);
 	
 	// Set the Image Brush for the Equipped Slotted Item 
 	
