@@ -30,6 +30,6 @@ public:
 
 private:
 
-	UPROPERTY(editAnywhere, Category = "Inventory")
+	UPROPERTY(editAnywhere, Category = "Inventory", meta=(Categories = "GameItems.Equipment"))
 	FGameplayTag EquipmentTypeTag; 
 };
