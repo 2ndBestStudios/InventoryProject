@@ -78,7 +78,25 @@ void UInv_SpatialInventory::EquippedGridSlotClicked(UInv_EquippedGridSlot* Equip
 
 void UInv_SpatialInventory::EquippedSlottedItemClicked(UInv_EquippedSlottedItem* SlottedItem)
 {
+	// Remove the Item Description 
+	UInv_InventoryStatics::ItemUnhovered(GetOwningPlayer()); 
+	if (IsValid(GetHoverItem()) && GetHoverItem()->IsStackable()) return;
 	
+	// Get Item to Equip 
+	UInv_InventoryItem* ItemToEquip = IsValid(GetHoverItem()) ? GetHoverItem()->GetInventoryItem() : nullptr;
+	
+	// Get Item to UnEquip 
+	UInv_InventoryItem* ItemToUnequip = SlottedItem->GetInventoryItem();
+	
+	// Get the Equipped Grid Slot holding this item 
+	UInv_EquippedGridSlot* EquippedGridSlot = FindSlotWithEquippedItem(ItemToUnequip); 
+	
+	// Clear the equipped grid slot of this item (set it's inventory item to nullptr) 
+	// Remove of the equippped slotted item from the equipped grid slot (unbind from the OnEquippedSlottedItemClicked) 
+	// Removing the Equipped Slotted Item from Parent 
+	// Assign previously equipped item as the hover item 
+	// Make a new equipped slotted item (for the item we held in HoverItem) 
+	// Broadcast delegates for OnItemEquipped/OnItemUnequipped (from the IC) 
 }
 
 
@@ -128,6 +146,15 @@ bool UInv_SpatialInventory::CanEquipHoverItem(UInv_EquippedGridSlot* EquippedGri
 			!HoverItem->IsStackable() && 
 				HeldItem->GetItemManifest().GetItemCategory() == EInv_ItemCategory::Equippable && 
 					HeldItem->GetItemManifest().GetItemType().MatchesTag(EquipmentTypeTag);
+}
+
+UInv_EquippedGridSlot* UInv_SpatialInventory::FindSlotWithEquippedItem(UInv_InventoryItem* EquippedItem) const
+{
+	auto* FoundEquippedGridSlot = EquippedGridSlots.FindByPredicate([EquippedItem](const UInv_EquippedGridSlot* GridSlot)
+	{
+		return GridSlot->GetInventoryItem() == EquippedItem; 
+	});
+	return FoundEquippedGridSlot ? *FoundEquippedGridSlot : nullptr;
 }
 
 FInv_SlotAvailabilityResult UInv_SpatialInventory::HasRoomForItem(UInv_ItemComponent* ItemComponent) const
