@@ -26,6 +26,8 @@ public:
 	void SetOwningSkeletalMesh(USkeletalMeshComponent* OwningMesh);
 	
 	void SetIsProxy(bool bProxy) {bIsProxy = bProxy;};
+	
+	void InitializeOwner(APlayerController* PlayerController);
 
 protected:
 	// Called when the game starts
