@@ -62,6 +62,9 @@ public:
 	
 	void ClearHoverItem();
 	
+	// Assigns HoverItem
+	void AssignHoverItem(UInv_InventoryItem* InventoryItem);
+	
 private:
 	// Constructs item grid 
 	void ConstructGrid(); 
@@ -133,9 +136,6 @@ private:
 
 	// Called whenever an inventory item is clicked & picked up 
 	void PickUp(UInv_InventoryItem* ClickedInventoryItem, const int32 GridIndex);
-
-	// Assigns HoverItem
-	void AssignHoverItem(UInv_InventoryItem* InventoryItem);
 
 	// Overload for assigning HoverItem. Allows us to set previous index and update stack count 
 	void AssignHoverItem(UInv_InventoryItem* InventoryItem, const int32 GridIndex, const int32 PreviousGridIndex);
