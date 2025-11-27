@@ -95,7 +95,7 @@ private:
 	void EquippedGridSlotClicked(UInv_EquippedGridSlot* EquippedGridSlot, const FGameplayTag& EquipmentTypeTag); 
 	
 	UFUNCTION() 
-	void EquippedSlottedItemClicked(UInv_EquippedSlottedItem* SlottedItem); 
+	void EquippedSlottedItemClicked(UInv_EquippedSlottedItem* EquippedSlottedItem); 
 
 	// Disables button just clicked 
 	void DisableButton(UButton* Button);
@@ -112,6 +112,8 @@ private:
 	void ClearSlotOfItem(UInv_EquippedGridSlot* EquippedGridSlot);
 	
 	void RemoveEquippedSlottedItem(UInv_EquippedSlottedItem* EquippedSlottedItem);
+	
+	void MakeEquippedSlottedItem(UInv_EquippedSlottedItem* EquippedSlottedItem, UInv_EquippedGridSlot* EquippedGridSlot, UInv_InventoryItem* ItemToEquip);
 	
 	TWeakObjectPtr<UInv_InventoryGrid> ActiveGrid;
 };
