@@ -203,7 +203,7 @@ void UInv_SpatialInventory::BroadcastSlotClickedDelegates(UInv_InventoryItem* It
 	UInv_InventoryComponent* InventoryComponent = UInv_InventoryStatics::GetInventoryComponent(GetOwningPlayer());
 	check(IsValid(InventoryComponent));
 	
-	InventoryComponent->Server_EquipSlotClicked(ItemToUnequip, ItemToEquip);
+	InventoryComponent->Server_EquipSlotClicked(ItemToEquip, ItemToUnequip);
 	
 	if (GetOwningPlayer()->GetNetMode() != NM_DedicatedServer)
 	{
