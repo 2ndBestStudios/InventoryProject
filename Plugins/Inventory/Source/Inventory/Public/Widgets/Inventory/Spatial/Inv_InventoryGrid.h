@@ -65,6 +65,8 @@ public:
 	// Assigns HoverItem
 	void AssignHoverItem(UInv_InventoryItem* InventoryItem);
 	
+	void OnHide(); 
+	
 private:
 	// Constructs item grid 
 	void ConstructGrid(); 
@@ -73,8 +75,8 @@ private:
 	bool MatchesCategory(const UInv_InventoryItem* Item) const;
 	
 	// Overload for checking HasRoomForItem
-	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item);
-	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest);
+	FInv_SlotAvailabilityResult HasRoomForItem(const UInv_InventoryItem* Item, const int32 StackAmountOverride = -1);
+	FInv_SlotAvailabilityResult HasRoomForItem(const FInv_ItemManifest& Manifest, const int32 StackAmountOverride = -1);
 
 	// Function to start performing actions on our item 
 	void AddItemToIndices(const FInv_SlotAvailabilityResult& Result, UInv_InventoryItem* NewItem);
@@ -192,6 +194,9 @@ private:
 
 	UFUNCTION()
 	void OnPopUpMenuSplit(int32 SplitAmount, int32 Index);
+	
+	UFUNCTION()
+	void OnInventoryMenuToggled(bool bOpen); 
 
 	UFUNCTION()
 	void OnPopUpMenuDrop(int32 Index);
@@ -218,6 +223,8 @@ private:
 	void FillInStack(const int32 FillAmount, const int32 Remainder, const int32 Index);
 
 	void CreateItemPopUp(const int32 GridIndex);
+	
+	void PutHoverItemBack(); 
 
 	UPROPERTY(EditAnywhere, Category="Inventory")
 	TSubclassOf<UInv_ItemPopUp> ItemPopUpClass;

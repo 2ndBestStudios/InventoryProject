@@ -21,6 +21,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FStackChange, const FInv_SlotAvailab
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FItemEquipStatusChanged, UInv_InventoryItem*, Item); 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FInventoryMenuToggled, bool, bOpen);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent), Blueprintable)
 class INVENTORY_API UInv_InventoryComponent : public UActorComponent
 {
@@ -71,6 +73,7 @@ public:
 	FStackChange OnStackChange;
 	FItemEquipStatusChanged OnItemEquipped;
 	FItemEquipStatusChanged OnItemUnEquipped;
+	FInventoryMenuToggled OnInventoryMenuToggled;
 protected:
 	// Called on game start 
 	virtual void BeginPlay() override;

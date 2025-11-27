@@ -115,5 +115,7 @@ private:
 	
 	void MakeEquippedSlottedItem(UInv_EquippedSlottedItem* EquippedSlottedItem, UInv_EquippedGridSlot* EquippedGridSlot, UInv_InventoryItem* ItemToEquip);
 	
+	void BroadcastSlotClickedDelegates(UInv_InventoryItem* ItemToEquip, UInv_InventoryItem* ItemToUnequip) const; 
+	
 	TWeakObjectPtr<UInv_InventoryGrid> ActiveGrid;
 };
