@@ -16,6 +16,8 @@ class INVENTORY_API AInv_ProxyMesh : public AActor
 public:
 	// Sets default values for this actor's properties
 	AInv_ProxyMesh();
+	
+	USkeletalMeshComponent* GetMesh() const {return Mesh;}
 
 protected:
 	// Called when the game starts or when spawned
