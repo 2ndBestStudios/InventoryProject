@@ -9,6 +9,7 @@ namespace FragmentTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(IconFragment)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(StackableFragment)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ConsumableFragment)
+	UE_DECLARE_GAMEPLAY_TAG_EXTERN(EquipmentFragment)
 
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(ItemNameFragment)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(PrimaryStatFragment)
@@ -17,8 +18,6 @@ namespace FragmentTags
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(FlavorTextFragment)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(SellValueFragment)
 	UE_DECLARE_GAMEPLAY_TAG_EXTERN(RequiredLevelFragment)
-
-
 	
 	namespace StatMod
 	{

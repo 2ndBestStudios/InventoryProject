@@ -145,9 +145,20 @@ void FInv_EquipmentFragment::OnUnequip(APlayerController* PC)
 
 void FInv_EquipmentFragment::Assimilate(UInv_CompositeBase* CompositeBase) const
 {
+	FInv_InventoryItemFragment::Assimilate(CompositeBase);
 	for (const auto& Modifier : EquipModifiers)
 	{
 		const auto& ModRef = Modifier.Get<>();
 		ModRef.Assimilate(CompositeBase);
+	}
+}
+
+void FInv_EquipmentFragment::Manifest()
+{
+	FInv_InventoryItemFragment::Manifest();
+	for (auto& Modifier : EquipModifiers)
+	{
+		auto& ModRef = Modifier.GetMutable<>();
+		ModRef.Manifest(); 
 	}
 }
