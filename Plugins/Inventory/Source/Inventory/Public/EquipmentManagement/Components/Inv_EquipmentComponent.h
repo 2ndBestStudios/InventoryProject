@@ -49,4 +49,9 @@ private:
 	
 	AInv_EquipActor* FindEquippedActorByTag(const FGameplayTag& EquipmentTypeTag); 
 	void RemoveEquippedActorByTag(const FGameplayTag& EquipmentTypeTag);
+	
+	void InitPlayerController(); 
+	
+	UFUNCTION()
+	void OnPossessedPawnChange(APawn* OldPawn, APawn* NewPawn);
 };

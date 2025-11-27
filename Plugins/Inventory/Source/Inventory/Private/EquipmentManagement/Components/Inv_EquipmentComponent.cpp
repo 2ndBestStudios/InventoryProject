@@ -16,16 +16,35 @@ void UInv_EquipmentComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	InitPlayerController(); 
+}
+
+void UInv_EquipmentComponent::InitPlayerController()
+{
 	OwningPlayerController = Cast<APlayerController>(GetOwner());
 	if (OwningPlayerController.IsValid())
 	{
 		ACharacter* OwnerCharacter = Cast<ACharacter>(OwningPlayerController->GetPawn()); 
 		if (IsValid(OwnerCharacter))
 		{
-			OwningSkeletalMeshComponent = OwnerCharacter->GetMesh(); 
+			OnPossessedPawnChange(nullptr, OwnerCharacter);
 		}
-		InitInventoryComponent(); 
+		else
+		{
+			// Called when there's a delay in multiplayer when player controller and character spawn at different times 
+			OwningPlayerController->OnPossessedPawnChanged.AddDynamic(this, &ThisClass::OnPossessedPawnChange); 
+		}
 	}
+}
+
+void UInv_EquipmentComponent::OnPossessedPawnChange(APawn* OldPawn, APawn* NewPawn)
+{
+	ACharacter* OwnerCharacter = Cast<ACharacter>(OwningPlayerController->GetPawn()); 
+	if (IsValid(OwnerCharacter))
+	{
+		OwningSkeletalMeshComponent = OwnerCharacter->GetMesh(); 
+	}
+	InitInventoryComponent();
 }
 
 void UInv_EquipmentComponent::InitInventoryComponent()
