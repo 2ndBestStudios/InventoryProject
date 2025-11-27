@@ -11,6 +11,11 @@
 #include "Items/Inv_InventoryItem.h"
 #include "Items/Fragments/Inv_ItemFragment.h"
 
+void UInv_EquipmentComponent::SetOwningSkeletalMesh(USkeletalMeshComponent* OwningMesh)
+{
+	OwningSkeletalMeshComponent = OwningMesh;
+}
+
 // Called when the game starts
 void UInv_EquipmentComponent::BeginPlay()
 {
