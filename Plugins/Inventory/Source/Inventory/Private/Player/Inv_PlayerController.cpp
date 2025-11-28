@@ -34,6 +34,15 @@ void AInv_PlayerController::ToggleInventory()
 	// Checks if inventory component is valid. Then calls toggle inventory function 
 	if (!InventoryComponent.IsValid()) return;
 	InventoryComponent->ToggleInventoryMenu(); 
+	
+	if (InventoryComponent->IsMenuOpen())
+	{
+		HUDWidget->SetVisibility(ESlateVisibility::Hidden);
+	}
+	else
+	{
+		HUDWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+	}
 }
 
 void AInv_PlayerController::BeginPlay()

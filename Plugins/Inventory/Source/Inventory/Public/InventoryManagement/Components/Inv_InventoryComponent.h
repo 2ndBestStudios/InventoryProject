@@ -66,6 +66,8 @@ public:
 	void AddRepSubObj(UObject* SubObj);
 
 	UInv_InventoryBase* GetInventoryMenu() const { return InventoryMenu; }
+	
+	bool IsMenuOpen() const {return  bInventoryMenuOpen; }
 
 	FInventoryItemChange OnItemAdded;
 	FInventoryItemChange OnItemRemoved;
