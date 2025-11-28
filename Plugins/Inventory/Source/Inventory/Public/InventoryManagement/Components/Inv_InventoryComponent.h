@@ -40,7 +40,7 @@ public:
 
 	// Server functions for adding new items and stacks 
 	UFUNCTION(Server, Reliable)
-	void Server_AddNewItem(UInv_ItemComponent* ItemComponent, int32 StackCount);
+	void Server_AddNewItem(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder);
 
 	UFUNCTION(Server, Reliable)
 	void Server_AddStacksToItem(UInv_ItemComponent* ItemComponent, int32 StackCount, int32 Remainder);
